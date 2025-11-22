@@ -1,3 +1,217 @@
-<a>
-  teste
-</a>
+<!-- home.component.html -->
+<div class="home-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <!-- Menu Mobile -->
+        <button class="menu-btn" (click)="toggleMenu()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M3 12h18M3 6h18M3 18h18" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <!-- Logo -->
+        <h1 class="logo">MegaLoja Online</h1>
+
+        <!-- Barra de Busca Desktop -->
+        <div class="search-bar desktop">
+          <input
+            type="text"
+            placeholder="Buscar produtos..."
+            class="search-input"
+          >
+          <button class="search-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Ícones do Header -->
+        <div class="header-icons">
+          <button class="icon-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </button>
+          <button class="icon-btn cart-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="9" cy="21" r="1"/>
+              <circle cx="20" cy="21" r="1"/>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+            <span class="cart-badge" *ngIf="carrinhoCount > 0">{{ carrinhoCount }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Busca Mobile -->
+      <div class="search-bar mobile">
+        <input
+          type="text"
+          placeholder="Buscar produtos..."
+          class="search-input"
+        >
+        <button class="search-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- Mensagem de Loading -->
+      <div *ngIf="loading" class="loading-message">
+        <p>Carregando produtos...</p>
+      </div>
+
+      <!-- Mensagem de Erro -->
+      <div *ngIf="erro && !loading" class="error-message">
+        <p>{{ erro }}</p>
+      </div>
+
+      <!-- Seção de Promoções -->
+      <section class="section" *ngIf="!loading && promocoes && promocoes.length > 0">
+        <h2 class="section-title promocoes">Promoções Relâmpagos</h2>
+
+        <div class="products-grid">
+          <div class="product-card" *ngFor="let produto of promocoes">
+            <!-- Imagem do Produto -->
+            <div class="product-image" [routerLink]="['/produto', produto.id]">
+              <img [src]="produto.imagem" [alt]="produto.nome">
+              <div class="discount-badge" *ngIf="produto.precoAntigo">
+                -{{ calcularDesconto(produto) }}%
+              </div>
+            </div>
+
+            <!-- Informações do Produto -->
+            <div class="product-info">
+              <h3 class="product-name" [routerLink]="['/produto', produto.id]">{{ produto.nome }}</h3>
+
+              <!-- Rating com Estrelas -->
+              <div class="rating">
+                <span
+                  *ngFor="let estrela of getArrayEstrelas(produto.rating)"
+                  [class.filled]="isEstrelaPreenchida(estrela, produto.rating)"
+                  class="star">
+                  ★
+                </span>
+                <span class="rating-value">({{ produto.rating }})</span>
+              </div>
+
+              <!-- Preços -->
+              <p class="old-price" *ngIf="produto.precoAntigo">
+                R$ {{ produto.precoAntigo }}
+              </p>
+
+              <p class="price">
+                R$ {{ produto.preco }}
+              </p>
+
+              <p class="installments">
+                ou {{ produto.parcelas }}x de R$ {{ calcularParcela(produto) }}
+              </p>
+
+              <!-- Botão -->
+              <button
+                class="btn-add-cart"
+                (click)="adicionarAoCarrinho(produto)">
+                Adicionar ao Carrinho
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seção de Lançamentos -->
+      <section class="section" *ngIf="!loading && lancamentos && lancamentos.length > 0">
+        <h2 class="section-title lancamentos">Lançamentos</h2>
+
+        <div class="products-grid lancamentos-grid">
+          <div class="product-card" *ngFor="let produto of lancamentos">
+            <!-- Imagem do Produto -->
+            <div class="product-image">
+              <img [src]="produto.imagem" [alt]="produto.nome">
+            </div>
+
+            <!-- Informações do Produto -->
+            <div class="product-info">
+              <h3 class="product-name">{{ produto.nome }}</h3>
+
+              <!-- Rating com Estrelas -->
+              <div class="rating">
+                <span
+                  *ngFor="let estrela of getArrayEstrelas(produto.rating)"
+                  [class.filled]="isEstrelaPreenchida(estrela, produto.rating)"
+                  class="star">
+                  ★
+                </span>
+                <span class="rating-value">({{ produto.rating }})</span>
+              </div>
+
+              <!-- Preços -->
+              <p class="price">
+                R$ {{ produto.preco  }}
+              </p>
+
+              <p class="installments">
+                ou {{ produto.parcelas }}x de R$ {{ calcularParcela(produto)  }}
+              </p>
+
+              <!-- Botão -->
+              <button
+                class="btn-add-cart"
+                (click)="adicionarAoCarrinho(produto)">
+                Adicionar ao Carrinho
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mensagem quando não há produtos -->
+      <div *ngIf="!loading && (!promocoes || promocoes.length === 0) && (!lancamentos || lancamentos.length === 0)" class="no-products">
+        <p>Nenhum produto disponível no momento.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <h3>Sobre Nós</h3>
+          <p>A melhor loja online com os melhores preços e condições de pagamento.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Atendimento</h3>
+          <p>
+            Segunda a Sexta: 8h às 18h<br>
+            Sábado: 8h às 12h
+          </p>
+        </div>
+        <div class="footer-col">
+          <h3>Contato</h3>
+          <p>
+            Email: contato@megaloja.com<br>
+            Tel: (11) 1234-5678
+          </p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 MegaLoja Online. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,187 @@
+<!-- product-detail.component.html -->
+<div class="product-detail-container">
+
+  <!-- Header Simplificado -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <h1 class="logo" (click)="voltarParaHome()">MegaLoja Online</h1>
+
+        <div class="search-bar">
+          <input type="text" placeholder="Buscar produtos..." class="search-input">
+          <button class="search-btn">🔍</button>
+        </div>
+
+        <div class="header-icons">
+          <button class="icon-btn">👤</button>
+          <button class="icon-btn">🛒</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb" *ngIf="produto">
+    <div class="container">
+      <span (click)="voltarParaHome()" class="breadcrumb-link">Home</span>
+      <span class="separator">›</span>
+      <span (click)="voltarParaHome()" class="breadcrumb-link">Produtos</span>
+      <span class="separator">›</span>
+      <span class="breadcrumb-current">{{ produto.nome }}</span>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <p>Carregando produto...</p>
+  </div>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content" *ngIf="!loading && produto">
+    <div class="container">
+
+      <!-- Detalhe do Produto -->
+      <div class="product-section">
+
+        <!-- Galeria de Imagens -->
+        <div class="product-gallery">
+          <div class="main-image">
+            <img [src]="imagemAtual" [alt]="produto.nome">
+            <div class="discount-badge" *ngIf="produto.precoAntigo">
+              -{{ calcularDesconto() }}% OFF
+            </div>
+          </div>
+        </div>
+
+        <!-- Informações do Produto -->
+        <div class="product-info-section">
+          <h1 class="product-title">{{ produto.nome }}</h1>
+
+          <!-- Rating -->
+          <div class="rating-section">
+            <div class="stars">
+              <span
+                *ngFor="let estrela of getArrayEstrelas(produto.rating)"
+                [class.filled]="isEstrelaPreenchida(estrela, produto.rating)"
+                class="star">
+                ★
+              </span>
+            </div>
+            <span class="rating-text">{{ produto.rating }} (128 avaliações)</span>
+          </div>
+
+          <!-- Preços -->
+          <div class="price-section">
+            <p class="old-price" *ngIf="produto.precoAntigo">
+              De: R$ {{ produto.precoAntigo }}
+            </p>
+            <p class="current-price">
+              R$ {{ produto.preco }}
+            </p>
+            <p class="installments">
+              ou {{ produto.parcelas }}x de R$ {{ calcularParcela() }} sem juros
+            </p>
+          </div>
+
+          <!-- Descrição -->
+          <div class="description-section">
+            <h3>Descrição do Produto</h3>
+            <p>
+              Este produto oferece excelente custo-benefício, combinando qualidade e preço acessível.
+              Ideal para quem busca tecnologia de ponta com garantia estendida e suporte técnico especializado.
+            </p>
+            <ul class="features-list">
+              <li>✓ Garantia de 12 meses</li>
+              <li>✓ Frete grátis para todo Brasil</li>
+              <li>✓ Troca facilitada em até 30 dias</li>
+              <li>✓ Produto 100% original</li>
+            </ul>
+          </div>
+
+          <!-- Quantidade -->
+          <div class="quantity-section">
+            <label>Quantidade:</label>
+            <div class="quantity-control">
+              <button class="qty-btn" (click)="diminuirQuantidade()">-</button>
+              <span class="qty-value">{{ quantidadeSelecionada }}</span>
+              <button class="qty-btn" (click)="aumentarQuantidade()">+</button>
+            </div>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="action-buttons">
+            <button class="btn-buy-now" (click)="comprarAgora()">
+              Comprar Agora
+            </button>
+            <button class="btn-add-cart" (click)="adicionarAoCarrinho()">
+              Adicionar ao Carrinho
+            </button>
+          </div>
+
+          <!-- Informações de Entrega -->
+          <div class="delivery-info">
+            <p>📦 <strong>Entrega estimada:</strong> 5-7 dias úteis</p>
+            <p>🚚 <strong>Frete grátis</strong> para compras acima de R$ 200,00</p>
+            <p>🔒 <strong>Compra segura:</strong> Ambiente protegido</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Produtos Relacionados -->
+      <section class="related-products" *ngIf="produtosRelacionados.length > 0">
+        <h2 class="section-title">Veja também:</h2>
+
+        <div class="related-grid">
+          <div
+            class="related-card"
+            *ngFor="let item of produtosRelacionados"
+            (click)="irParaProduto(item.id)">
+            <div class="related-image">
+              <img [src]="item.imagem" [alt]="item.nome">
+            </div>
+            <div class="related-info">
+              <h4>{{ item.nome }}</h4>
+              <p class="related-price">R$ {{ item.preco  }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Produto não encontrado -->
+  <div *ngIf="!loading && !produto" class="not-found">
+    <div class="container">
+      <h2>Produto não encontrado</h2>
+      <p>O produto que você procura não está disponível.</p>
+      <button class="btn-back" (click)="voltarParaHome()">
+        Voltar para a página inicial
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <h3>Sobre Nós</h3>
+          <p>A melhor loja online com os melhores preços.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Atendimento</h3>
+          <p>Segunda a Sexta: 8h às 18h<br>Sábado: 8h às 12h</p>
+        </div>
+        <div class="footer-col">
+          <h3>Contato</h3>
+          <p>contato@megaloja.com<br>(11) 1234-5678</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 MegaLoja Online. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+</div>
