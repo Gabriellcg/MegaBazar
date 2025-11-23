@@ -23,8 +23,7 @@ export class ProductDetail implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private produtosService: ProdutosService,
-    private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -48,7 +47,6 @@ export class ProductDetail implements OnInit {
         }
 
         this.loading = false;
-        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Erro ao carregar produto:', error);
@@ -85,21 +83,23 @@ export class ProductDetail implements OnInit {
 
   adicionarAoCarrinho(): void {
     if (this.produto) {
+      this.produtosService.adicionarItem(this.produto, this.quantidadeSelecionada);
+      alert(`${this.quantidadeSelecionada}x ${this.produto.nome} adicionado ao carrinho!`);
       console.log('Adicionando ao carrinho:', {
         produto: this.produto,
         quantidade: this.quantidadeSelecionada
       });
-      alert(`${this.quantidadeSelecionada}x ${this.produto.nome} adicionado ao carrinho!`);
     }
   }
 
   comprarAgora(): void {
     if (this.produto) {
+      this.produtosService.adicionarItem(this.produto, this.quantidadeSelecionada);
+      this.router.navigate(['/carrinho']);
       console.log('Compra imediata:', {
         produto: this.produto,
         quantidade: this.quantidadeSelecionada
       });
-      alert('Redirecionando para o checkout...');
     }
   }
 

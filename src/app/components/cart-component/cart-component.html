@@ -1,0 +1,196 @@
+<!-- cart.component.html -->
+<div class="cart-container">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <h1 class="logo" [routerLink]="['/']">MegaLoja Online</h1>
+
+        <div class="search-bar">
+          <input type="text" placeholder="Buscar produtos..." class="search-input">
+          <button class="search-btn">🔍</button>
+        </div>
+
+        <div class="header-icons">
+          <button class="icon-btn">👤</button>
+          <button class="icon-btn cart-active">🛒</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <h1 class="page-title">Meu carrinho</h1>
+
+      <!-- Carrinho Vazio -->
+      <div *ngIf="itens.length === 0" class="empty-cart">
+        <div class="empty-icon">🛒</div>
+        <h2>Seu carrinho está vazio</h2>
+        <p>Adicione produtos ao carrinho para continuar comprando</p>
+        <button class="btn-primary" (click)="continuarComprando()">
+          Ver Produtos
+        </button>
+      </div>
+
+      <!-- Carrinho com Itens -->
+      <div *ngIf="itens.length > 0" class="cart-content">
+
+        <!-- Lista de Itens -->
+        <div class="cart-items">
+          <div class="cart-header-actions">
+            <span class="items-count">{{ itens.length }} {{ itens.length === 1 ? 'item' : 'itens' }}</span>
+            <button class="btn-clear" (click)="limparCarrinho()">
+              Limpar carrinho
+            </button>
+          </div>
+
+          <div class="item-card" *ngFor="let item of itens">
+            <div class="item-image" (click)="irParaProduto(item.produto.id)">
+              <img [src]="item.produto.imagem" [alt]="item.produto.nome">
+            </div>
+
+            <div class="item-info">
+              <h3 class="item-name" (click)="irParaProduto(item.produto.id)">
+                {{ item.produto.nome }}
+              </h3>
+
+              <div class="item-price-section">
+                <p class="item-price">
+                  R$ {{ item.produto.preco }}
+                </p>
+                <p class="item-installments">
+                  {{ item.produto.parcelas }}x de R$ {{ calcularParcela(item.produto.preco, item.produto.parcelas) }}
+                </p>
+              </div>
+
+              <div class="item-actions">
+                <!-- Controle de Quantidade -->
+                <div class="quantity-control">
+                  <button
+                    class="qty-btn"
+                    (click)="diminuirQuantidade(item)"
+                    [disabled]="item.quantidade <= 1">
+                    -
+                  </button>
+                  <span class="qty-value">{{ item.quantidade }}</span>
+                  <button
+                    class="qty-btn"
+                    (click)="aumentarQuantidade(item)"
+                    [disabled]="item.quantidade >= 10">
+                    +
+                  </button>
+                </div>
+
+                <!-- Botão Remover -->
+                <button class="btn-remove" (click)="removerItem(item)">
+                  🗑️ Remover
+                </button>
+              </div>
+            </div>
+
+            <div class="item-subtotal">
+              <span class="subtotal-label">Subtotal:</span>
+              <span class="subtotal-value">
+                R$ {{ (item.produto.preco * item.quantidade) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumo do Pedido -->
+        <div class="order-summary">
+          <div class="summary-card">
+            <h2 class="summary-title">Resumo do pedido</h2>
+
+            <div class="summary-line">
+              <span>Subtotal ({{ itens.length }} {{ itens.length === 1 ? 'item' : 'itens' }}):</span>
+              <span>R$ {{ subtotal }}</span>
+            </div>
+
+            <div class="summary-line">
+              <span>Frete:</span>
+              <span [class.free-shipping]="frete === 0">
+                {{ frete === 0 ? 'GRÁTIS' : 'R$ ' + (frete ) }}
+              </span>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-total">
+              <span>Total:</span>
+              <span class="total-value">R$ {{ total  }}</span>
+            </div>
+
+            <div class="free-shipping-info" *ngIf="subtotal > 0 && subtotal < 200">
+              <p class="info-icon">ℹ️</p>
+              <p>Falta R$ {{ (200 - subtotal) }} para frete grátis!</p>
+            </div>
+
+            <div class="free-shipping-success" *ngIf="frete === 0 && subtotal > 0">
+              <p class="success-icon">✓</p>
+              <p>Você ganhou frete grátis!</p>
+            </div>
+
+            <button class="btn-checkout" (click)="finalizarCompra()">
+              Finalizar compra
+            </button>
+
+            <button class="btn-continue" (click)="continuarComprando()">
+              Continuar comprando
+            </button>
+
+            <!-- Formas de Pagamento -->
+            <div class="payment-info">
+              <p class="payment-title">Formas de pagamento:</p>
+              <div class="payment-icons">
+                <span class="payment-icon">💳</span>
+                <span class="payment-icon">🏦</span>
+                <span class="payment-icon">📱</span>
+                <span class="payment-icon">🎫</span>
+              </div>
+              <p class="payment-text">
+                Cartão de crédito, débito, PIX, boleto e mais
+              </p>
+            </div>
+
+            <!-- Segurança -->
+            <div class="security-info">
+              <p>🔒 Ambiente seguro</p>
+              <p>Seus dados estão protegidos</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <h3>Sobre Nós</h3>
+          <p>A melhor loja online com os melhores preços.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Atendimento</h3>
+          <p>Segunda a Sexta: 8h às 18h<br>Sábado: 8h às 12h</p>
+        </div>
+        <div class="footer-col">
+          <h3>Contato</h3>
+          <p>contato@megaloja.com<br>(11) 1234-5678</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 MegaLoja Online. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+</div>

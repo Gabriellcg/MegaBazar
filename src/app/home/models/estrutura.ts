@@ -14,3 +14,8 @@ export interface ProdutosData {
   promocoes: Produto[];
   lancamentos: Produto[];
 }
+
+export interface ItemCarrinho {
+  produto: Produto;
+  quantidade: number;
+}

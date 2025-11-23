@@ -28,30 +28,48 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     console.log('🚀 ngOnInit chamado');
     this.carregarProdutos();
+    this.atualizarCarrinhoCount();
+  }
+
+  atualizarCarrinhoCount(): void {
+    this.produtosService.itens$.subscribe(() => {
+      this.carrinhoCount = this.produtosService.getTotalItens();
+    });
   }
 
   carregarProdutos(): void {
+    console.log('📡 Iniciando carregamento...');
     this.loading = true;
     this.erro = '';
 
     this.produtosService.getProdutos().subscribe({
       next: (data) => {
+        console.log('✅ Dados recebidos do serviço:', data);
+
         // Garantir que os dados sejam atribuídos corretamente
         this.promocoes = Array.isArray(data.promocoes) ? [...data.promocoes] : [];
         this.lancamentos = Array.isArray(data.lancamentos) ? [...data.lancamentos] : [];
         this.loading = false;
 
+        console.log('📦 Promoções atribuídas:', this.promocoes);
+        console.log('📦 Promoções length:', this.promocoes.length);
+        console.log('📦 Lançamentos atribuídos:', this.lancamentos);
+        console.log('📦 Lançamentos length:', this.lancamentos.length);
+        console.log('⏱️ Loading agora é:', this.loading);
+
         // Forçar detecção de mudanças
         this.cdr.detectChanges();
+
+        console.log('✨ Change detection executado!');
       },
       error: (error) => {
+        console.error('❌ Erro ao carregar produtos:', error);
         this.erro = 'Erro ao carregar produtos. Carregando dados de exemplo...';
         this.loading = false;
         this.cdr.detectChanges();
       }
     });
   }
-
   calcularDesconto(produto: Produto): number {
     if (produto.precoAntigo) {
       return Math.round((1 - produto.preco / produto.precoAntigo) * 100);
@@ -64,7 +82,8 @@ export class HomeComponent implements OnInit {
   }
 
   adicionarAoCarrinho(produto: Produto): void {
-    this.carrinhoCount++;
+    this.produtosService.adicionarItem(produto, 1);
+    alert(`${produto.nome} foi adicionado ao carrinho!`);
     console.log('🛒 Produto adicionado ao carrinho:', produto);
   }
 
