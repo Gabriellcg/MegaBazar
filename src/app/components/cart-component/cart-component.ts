@@ -81,13 +81,8 @@ export class CartComponent implements OnInit {
       alert('Seu carrinho está vazio!');
       return;
     }
-    alert('Redirecionando para o checkout...');
-    console.log('Finalizando compra:', {
-      itens: this.itens,
-      subtotal: this.subtotal,
-      frete: this.frete,
-      total: this.total
-    });
+    // Redirecionar para checkout
+    this.router.navigate(['/checkout']);
   }
 
   calcularParcela(valor: number, parcelas: number): number {
@@ -97,5 +92,4 @@ export class CartComponent implements OnInit {
   irParaProduto(id: number): void {
     this.router.navigate(['/produto', id]);
   }
-
 }

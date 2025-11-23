@@ -1,0 +1,262 @@
+<!-- order-confirmation.component.html -->
+<div class="order-confirmation-container">
+
+  <!-- Banner Promocional -->
+  <div class="promo-banner">
+    Para frete grátis em pedidos acima de R$100,00 ou mais, use o código FRETEFREE
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <h1 class="logo" [routerLink]="['/']">MegaLoja Online</h1>
+
+        <div class="search-bar">
+          <input type="text" placeholder="Buscar produtos..." class="search-input">
+          <button class="search-btn">🔍</button>
+        </div>
+
+        <div class="header-icons">
+          <button class="icon-btn">👤</button>
+          <button class="icon-btn" [routerLink]="['/carrinho']">🛒</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <div class="container">
+      <button class="back-btn" (click)="voltarParaHome()">
+        ← Voltar
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <p>Carregando detalhes do pedido...</p>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content" *ngIf="!loading && pedido">
+    <div class="container">
+
+      <!-- Título e Status -->
+      <div class="success-header">
+        <div class="success-icon">✓</div>
+        <h1 class="page-title">Pedido confirmado</h1>
+        <p class="order-number">Número do Pedido: <strong>{{ pedido.numero }}</strong></p>
+        <p class="order-date">Realizado em: {{ formatarData(pedido.data) }}</p>
+      </div>
+
+      <!-- Grid Principal -->
+      <div class="order-grid">
+
+        <!-- Coluna Esquerda - Detalhes do Pedido -->
+        <div class="left-column">
+
+          <!-- Itens do Pedido -->
+          <div class="order-section">
+            <h2 class="section-title">Itens do pedido</h2>
+
+            <div class="order-items">
+              <div class="order-item-card" *ngFor="let item of pedido.itens">
+                <div class="item-image">
+                  <img [src]="item.imagem" [alt]="item.nome">
+                </div>
+                <div class="item-details">
+                  <h3 class="item-name">{{ item.nome }}</h3>
+                  <p class="item-price">R$ {{ formatarPreco(item.preco) }} /un Qtd.</p>
+                  <p class="item-quantity">Quantidade: {{ item.quantidade }}</p>
+                </div>
+                <div class="item-subtotal">
+                  <span class="subtotal-label">Subtotal:</span>
+                  <span class="subtotal-value">
+                    R$ {{ formatarPreco(calcularSubtotalItem(item.preco, item.quantidade)) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ações Principais -->
+          <div class="action-buttons">
+            <button class="btn-primary" (click)="verMaisProdutos()">
+              Ver mais produtos
+            </button>
+            <button class="btn-secondary" (click)="acompanharPedido()">
+              Acompanhar pedido
+            </button>
+            <button class="btn-outline" (click)="verTodosOsPedidos()">
+              Voltar para home
+            </button>
+          </div>
+
+          <!-- Informações Adicionais -->
+          <div class="info-box">
+            <p class="info-text">
+              <strong>Atenção:</strong> Confira os detalhes do pedido antes de confirmar.
+              Em caso de dúvidas, entre em contato conosco.
+              Prazo previsto de entrega: <strong>{{ pedido.prazoEntrega }}</strong>.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Coluna Direita - Resumo e Detalhes -->
+        <div class="right-column">
+
+          <!-- Resumo do Pedido -->
+          <div class="summary-card">
+            <h3 class="card-title">Quantidade</h3>
+
+            <div class="summary-info">
+              <div class="info-item">
+                <span class="info-label">Subtotal:</span>
+                <span class="info-value">R$ {{ formatarPreco(pedido.subtotal) }}</span>
+              </div>
+
+              <div class="info-item">
+                <span class="info-label">Frete:</span>
+                <span class="info-value" [class.free]="pedido.frete === 0">
+                  {{ pedido.frete === 0 ? 'GRÁTIS' : 'R$ ' + formatarPreco(pedido.frete) }}
+                </span>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="info-item total">
+                <span class="info-label">Total:</span>
+                <span class="info-value">R$ {{ formatarPreco(pedido.total) }}</span>
+              </div>
+            </div>
+
+            <div class="delivery-estimate">
+              <p><strong>Entrega estimada:</strong></p>
+              <p>{{ pedido.prazoEntrega }}</p>
+            </div>
+          </div>
+
+          <!-- Endereço de Entrega -->
+          <div class="address-card">
+            <h3 class="card-title">Endereço de entrega</h3>
+            <div class="address-content">
+              <p><strong>{{ pedido.endereco.logradouro }}, {{ pedido.endereco.numero }}</strong></p>
+              <p *ngIf="pedido.endereco.complemento">{{ pedido.endereco.complemento }}</p>
+              <p>{{ pedido.endereco.bairro }}</p>
+              <p>{{ pedido.endereco.cidade }} - {{ pedido.endereco.estado }}</p>
+              <p>CEP: {{ pedido.endereco.cep }}</p>
+            </div>
+          </div>
+
+          <!-- Forma de Pagamento -->
+          <div class="payment-card">
+            <h3 class="card-title">Forma de pagamento</h3>
+            <div class="payment-content">
+              <p><strong>{{ pedido.formaPagamento }}</strong></p>
+              <p class="payment-status">Aguardando confirmação</p>
+            </div>
+          </div>
+
+          <!-- Timeline de Entrega -->
+          <div class="timeline-card">
+            <h3 class="card-title">Status do pedido</h3>
+            <div class="timeline">
+              <div class="timeline-item active">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <p class="timeline-title">Pedido realizado</p>
+                  <p class="timeline-date">Agora</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <p class="timeline-title">Pagamento confirmado</p>
+                  <p class="timeline-date">Em breve</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <p class="timeline-title">Em separação</p>
+                  <p class="timeline-date">Em breve</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <p class="timeline-title">Em transporte</p>
+                  <p class="timeline-date">Em breve</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <p class="timeline-title">Entregue</p>
+                  <p class="timeline-date">Previsão: {{ pedido.prazoEntrega }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Caso não tenha pedido -->
+  <div *ngIf="!loading && !pedido" class="no-order">
+    <div class="container">
+      <h2>Nenhum pedido encontrado</h2>
+      <p>Não foi possível carregar os detalhes do pedido.</p>
+      <button class="btn-primary" (click)="voltarParaHome()">
+        Voltar para home
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <h3>Ajuda</h3>
+          <ul>
+            <li>SAC</li>
+            <li>Trocas e devoluções</li>
+            <li>Meus pedidos</li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Sobre</h3>
+          <ul>
+            <li>Sobre nós</li>
+            <li>Trabalhe conosco</li>
+            <li>Política de Privacidade</li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Redes Sociais</h3>
+          <ul>
+            <li>Facebook</li>
+            <li>Instagram</li>
+            <li>Twitter</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Formas de pagamento</p>
+        <div class="payment-methods">
+          💳 🏦 📱 🎫
+        </div>
+        <p class="copyright">© 2024 MegaLoja Online. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+</div>

@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { ProductDetail } from './components/product-detail/product-detail';
 import { CartComponent } from './components/cart-component/cart-component';
+import { Checkout } from './components/checkout/checkout';
+import { OrderConfirmationComponent } from './components/order-confirmation-component/order-confirmation-component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -17,6 +19,16 @@ export const routes: Routes = [
     path: 'carrinho',
     component: CartComponent,
     title: 'Carrinho - MegaLoja Online'
+  },
+    {
+    path: 'checkout',
+    component: Checkout,
+    title: 'Finalizar Compra - MegaLoja Online'
+  },
+   {
+    path: 'pedido-confirmado',
+    component: OrderConfirmationComponent,
+    title: 'Pedido Confirmado - MegaLoja Online'
   },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' }
