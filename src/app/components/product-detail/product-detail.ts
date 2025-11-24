@@ -23,7 +23,8 @@ export class ProductDetail implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private produtosService: ProdutosService,
-  ) {}
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -47,6 +48,7 @@ export class ProductDetail implements OnInit {
         }
 
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Erro ao carregar produto:', error);

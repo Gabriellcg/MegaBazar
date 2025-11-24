@@ -55,3 +55,26 @@ export interface Pedido {
   status: 'aguardando_pagamento' | 'pagamento_confirmado' | 'em_separacao' | 'em_transporte' | 'entregue' | 'cancelado';
   dataAtualizacao?: Date;
 }
+
+export interface Loja {
+  id: number;
+  nome: string;
+  endereco: {
+    logradouro: string;
+    numero: string;
+    complemento?: string;
+    bairro: string;
+    cidade: string;
+    estado: string;
+    cep: string;
+  };
+  telefone: string;
+  horarioFuncionamento: string;
+  distancia?: number; // em km
+  tempoEstimado?: string;
+  disponivel: boolean;
+}
+
+export interface LojasData {
+  lojas: Loja[];
+}

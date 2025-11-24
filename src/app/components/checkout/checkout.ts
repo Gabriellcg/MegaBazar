@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ItemCarrinho } from '../../home/models/estrutura';
+import { ItemCarrinho, Loja } from '../../home/models/estrutura';
 import { ProdutosService } from '../../services/produtos.service';
+import { LojasService } from '../../services/loja.service';
 
 @Component({
   selector: 'app-checkout',
@@ -13,7 +14,7 @@ import { ProdutosService } from '../../services/produtos.service';
 })
 export class Checkout implements OnInit {
 
-   checkoutForm!: FormGroup;
+  checkoutForm!: FormGroup;
   itens: ItemCarrinho[] = [];
   subtotal: number = 0;
   frete: number = 0;
@@ -22,11 +23,18 @@ export class Checkout implements OnInit {
   metodoPagamentoSelecionado: string = '';
   enderecoSelecionado: string = '';
 
+  // RF01 e RF02: Modalidade de entrega e lojas
+  modalidadeEntrega: 'entrega' | 'retirada' = 'entrega';
+  lojasDisponiveis: Loja[] = [];
+  lojaSelecionada: Loja | null = null;
+  mostrarLojas: boolean = false;
+
   constructor(
     private fb: FormBuilder,
-    private carrinhoService: ProdutosService,
+    private pedidosService: ProdutosService,
+    private lojasService: LojasService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.carregarCarrinho();
@@ -60,24 +68,90 @@ export class Checkout implements OnInit {
   }
 
   carregarCarrinho(): void {
-    this.carrinhoService.itens$.subscribe(itens => {
+    this.pedidosService.itens$.subscribe(itens => {
       this.itens = itens;
       this.calcularValores();
     });
   }
 
   calcularValores(): void {
-    this.subtotal = this.carrinhoService.getSubtotal();
+    this.subtotal = this.pedidosService.getSubtotal();
 
-    if (this.subtotal >= 200) {
-      this.frete = 0;
-    } else if (this.subtotal > 0) {
-      this.frete = 29.90;
+    // RF01: Frete só se for entrega
+    if (this.modalidadeEntrega === 'entrega') {
+      if (this.subtotal >= 200) {
+        this.frete = 0;
+      } else if (this.subtotal > 0) {
+        this.frete = 29.90;
+      } else {
+        this.frete = 0;
+      }
     } else {
+      // Retirada na loja = sem frete
       this.frete = 0;
     }
 
     this.total = this.subtotal + this.frete;
+  }
+
+  // RF01: Selecionar modalidade de entrega
+  selecionarModalidadeEntrega(modalidade: 'entrega' | 'retirada'): void {
+    this.modalidadeEntrega = modalidade;
+    this.calcularValores();
+
+    if (modalidade === 'retirada') {
+      // Desabilitar validação de endereço para retirada
+      this.checkoutForm.get('endereco')?.clearValidators();
+      this.checkoutForm.get('numero')?.clearValidators();
+      this.checkoutForm.get('bairro')?.clearValidators();
+      this.checkoutForm.get('cidade')?.clearValidators();
+      this.checkoutForm.get('estado')?.clearValidators();
+
+      // Carregar todas as lojas
+      this.lojasDisponiveis = this.lojasService.getTodasLojas();
+      this.mostrarLojas = false;
+    } else {
+      // Reativar validação de endereço para entrega
+      this.checkoutForm.get('endereco')?.setValidators([Validators.required]);
+      this.checkoutForm.get('numero')?.setValidators([Validators.required]);
+      this.checkoutForm.get('bairro')?.setValidators([Validators.required]);
+      this.checkoutForm.get('cidade')?.setValidators([Validators.required]);
+      this.checkoutForm.get('estado')?.setValidators([Validators.required]);
+
+      this.lojaSelecionada = null;
+      this.lojasDisponiveis = [];
+      this.mostrarLojas = false;
+    }
+
+    // Atualizar validações
+    this.checkoutForm.get('endereco')?.updateValueAndValidity();
+    this.checkoutForm.get('numero')?.updateValueAndValidity();
+    this.checkoutForm.get('bairro')?.updateValueAndValidity();
+    this.checkoutForm.get('cidade')?.updateValueAndValidity();
+    this.checkoutForm.get('estado')?.updateValueAndValidity();
+  }
+
+  // RF02: Buscar lojas próximas ao CEP
+  buscarLojasProximas(): void {
+    const cep = this.checkoutForm.get('cep')?.value?.replace(/\D/g, '');
+
+    if (cep && cep.length === 8) {
+      this.lojasDisponiveis = this.lojasService.getLojasProximasPorCEP(cep);
+      this.mostrarLojas = true;
+    } else {
+      alert('Por favor, informe um CEP válido para buscar lojas próximas.');
+    }
+  }
+
+  // RF02: Selecionar loja para retirada
+  selecionarLoja(loja: Loja): void {
+    this.lojaSelecionada = loja;
+    console.log('Loja selecionada:', loja);
+  }
+
+  // Obter endereço completo da loja
+  getEnderecoLoja(loja: Loja): string {
+    return this.lojasService.getEnderecoCompleto(loja);
   }
 
   buscarCep(): void {
@@ -135,6 +209,12 @@ export class Checkout implements OnInit {
       return;
     }
 
+    // Validar modalidade de retirada
+    if (this.modalidadeEntrega === 'retirada' && !this.lojaSelecionada) {
+      alert('Por favor, selecione uma loja para retirada!');
+      return;
+    }
+
     if (this.checkoutForm.invalid) {
       alert('Por favor, preencha todos os campos obrigatórios!');
       this.marcarCamposComoTocados();
@@ -158,7 +238,14 @@ export class Checkout implements OnInit {
       frete: this.frete,
       total: this.total,
       formaPagamento: this.getFormaPagamentoTexto(),
-      endereco: {
+      modalidadeEntrega: this.modalidadeEntrega,
+      lojaRetirada: this.lojaSelecionada ? {
+        id: this.lojaSelecionada.id,
+        nome: this.lojaSelecionada.nome,
+        endereco: this.lojaSelecionada.endereco,
+        telefone: this.lojaSelecionada.telefone
+      } : undefined,
+      endereco: this.modalidadeEntrega === 'entrega' ? {
         logradouro: formData.endereco,
         numero: formData.numero,
         complemento: formData.complemento,
@@ -166,8 +253,8 @@ export class Checkout implements OnInit {
         cidade: formData.cidade,
         estado: formData.estado,
         cep: formData.cep
-      },
-      prazoEntrega: '2-5 dias úteis',
+      } : this.lojaSelecionada!.endereco,
+      prazoEntrega: this.modalidadeEntrega === 'retirada' ? '2 horas' : '2-5 dias úteis',
       dadosCliente: {
         nome: formData.nomeCompleto,
         email: formData.email,
@@ -180,10 +267,10 @@ export class Checkout implements OnInit {
     console.log('Pedido finalizado:', pedido);
 
     // Adicionar pedido ao service
-    this.carrinhoService.adicionarPedido(pedido);
+    this.pedidosService.adicionarPedido(pedido as any);
 
     // Limpar carrinho
-    this.carrinhoService.limparCarrinho();
+    this.pedidosService.limparCarrinho();
 
     // Redirecionar para página de confirmação
     this.router.navigate(['/pedido-confirmado']);

@@ -214,9 +214,206 @@
 }
 
 .cupom-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-dark);
+}
+
+/* RF01: Modalidade de Entrega */
+.modalidade-entrega {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.modalidade-btn {
+  padding: 20px;
+  background: var(--bg-light);
+  border: 3px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.modalidade-btn:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modalidade-btn.active {
+  border-color: var(--primary-color);
+  background: #dbeafe;
+}
+
+.modalidade-btn .icon {
+  font-size: 32px;
+}
+
+.modalidade-info {
+  text-align: left;
+}
+
+.modalidade-info strong {
+  display: block;
+  font-size: 16px;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+.modalidade-info p {
+  font-size: 13px;
+  color: var(--text-medium);
+  margin: 0;
+}
+
+/* RF02: Seção de Lojas */
+.lojas-section {
+  background: var(--bg-light);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.buscar-lojas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.buscar-lojas-header h4 {
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 16px;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.btn-buscar-lojas {
+  padding: 10px 16px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-buscar-lojas:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+.btn-buscar-lojas:disabled {
+  background: var(--text-light);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.lojas-info {
+  background: #fef3c7;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+}
+
+.lojas-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #92400e;
+}
+
+.lojas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.loja-card {
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.loja-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.loja-card.selected {
+  border-color: var(--primary-color);
+  background: #dbeafe;
+}
+
+.loja-header {
+  display: flex;
+  gap: 12px;
+}
+
+.loja-radio input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.loja-info {
+  flex: 1;
+}
+
+.loja-info h5 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 8px 0;
+}
+
+.loja-endereco,
+.loja-horario,
+.loja-telefone {
+  font-size: 13px;
+  color: var(--text-medium);
+  margin: 4px 0;
+}
+
+.loja-distancia {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.badge-distancia,
+.badge-tempo {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--bg-light);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.loja-selecionada-badge {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
 }
 
 .radio-group {

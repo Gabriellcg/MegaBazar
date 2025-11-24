@@ -1,0 +1,124 @@
+{
+  "lojas": [
+    {
+      "id": 1,
+      "nome": "MegaLoja Shopping Center",
+      "endereco": {
+        "logradouro": "Av. Paulista",
+        "numero": "1000",
+        "bairro": "Bela Vista",
+        "cidade": "São Paulo",
+        "estado": "SP",
+        "cep": "01310-100"
+      },
+      "telefone": "(11) 3000-1000",
+      "horarioFuncionamento": "Seg-Sex: 10h às 22h | Sáb-Dom: 10h às 18h",
+      "disponivel": true
+    },
+    {
+      "id": 2,
+      "nome": "MegaLoja Centro",
+      "endereco": {
+        "logradouro": "Rua XV de Novembro",
+        "numero": "500",
+        "bairro": "Centro",
+        "cidade": "São Paulo",
+        "estado": "SP",
+        "cep": "01013-001"
+      },
+      "telefone": "(11) 3000-2000",
+      "horarioFuncionamento": "Seg-Sex: 9h às 19h | Sáb: 9h às 14h",
+      "disponivel": true
+    },
+    {
+      "id": 3,
+      "nome": "MegaLoja Morumbi",
+      "endereco": {
+        "logradouro": "Av. Roque Petroni Jr.",
+        "numero": "1089",
+        "bairro": "Morumbi",
+        "cidade": "São Paulo",
+        "estado": "SP",
+        "cep": "04707-000"
+      },
+      "telefone": "(11) 3000-3000",
+      "horarioFuncionamento": "Todos os dias: 10h às 22h",
+      "disponivel": true
+    },
+    {
+      "id": 4,
+      "nome": "MegaLoja Tatuapé",
+      "endereco": {
+        "logradouro": "Rua Tuiuti",
+        "numero": "2000",
+        "bairro": "Tatuapé",
+        "cidade": "São Paulo",
+        "estado": "SP",
+        "cep": "03081-000"
+      },
+      "telefone": "(11) 3000-4000",
+      "horarioFuncionamento": "Seg-Sex: 10h às 22h | Sáb-Dom: 10h às 20h",
+      "disponivel": true
+    },
+    {
+      "id": 5,
+      "nome": "MegaLoja Pinheiros",
+      "endereco": {
+        "logradouro": "Rua Teodoro Sampaio",
+        "numero": "1500",
+        "bairro": "Pinheiros",
+        "cidade": "São Paulo",
+        "estado": "SP",
+        "cep": "05405-000"
+      },
+      "telefone": "(11) 3000-5000",
+      "horarioFuncionamento": "Seg-Dom: 10h às 22h",
+      "disponivel": false
+    },
+    {
+      "id": 6,
+      "nome": "MegaLoja Vila Mariana",
+      "endereco": {
+        "logradouro": "Av. Domingos de Morais",
+        "numero": "2564",
+        "bairro": "Vila Mariana",
+        "cidade": "São Paulo",
+        "estado": "SP",
+        "cep": "04035-000"
+      },
+      "telefone": "(11) 3000-6000",
+      "horarioFuncionamento": "Seg-Sex: 10h às 21h | Sáb-Dom: 10h às 19h",
+      "disponivel": true
+    },
+    {
+      "id": 7,
+      "nome": "MegaLoja Santana",
+      "endereco": {
+        "logradouro": "Av. Cruzeiro do Sul",
+        "numero": "1100",
+        "bairro": "Santana",
+        "cidade": "São Paulo",
+        "estado": "SP",
+        "cep": "02031-000"
+      },
+      "telefone": "(11) 3000-7000",
+      "horarioFuncionamento": "Seg-Sex: 9h às 20h | Sáb: 9h às 18h",
+      "disponivel": true
+    },
+    {
+      "id": 8,
+      "nome": "MegaLoja Itaquera",
+      "endereco": {
+        "logradouro": "Av. José Pinheiro Borges",
+        "numero": "s/n",
+        "bairro": "Itaquera",
+        "cidade": "São Paulo",
+        "estado": "SP",
+        "cep": "08220-900"
+      },
+      "telefone": "(11) 3000-8000",
+      "horarioFuncionamento": "Todos os dias: 10h às 22h",
+      "disponivel": true
+    }
+  ]
+}

@@ -62,15 +62,83 @@
           <!-- Cupom -->
           <div class="cupom-section">
             <h3>Como deseja receber?</h3>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="entrega" value="normal" checked>
-                <span>Entrega normal</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="entrega" value="expressa">
-                <span>Entrega expressa (+R$ 15,00)</span>
-              </label>
+
+            <!-- RF01: Seleção de Modalidade de Entrega -->
+            <div class="modalidade-entrega">
+              <button
+                type="button"
+                class="modalidade-btn"
+                [class.active]="modalidadeEntrega === 'entrega'"
+                (click)="selecionarModalidadeEntrega('entrega')">
+                <span class="icon">🚚</span>
+                <div class="modalidade-info">
+                  <strong>Entrega Padrão</strong>
+                  <p>Receba em casa</p>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                class="modalidade-btn"
+                [class.active]="modalidadeEntrega === 'retirada'"
+                (click)="selecionarModalidadeEntrega('retirada')">
+                <span class="icon">🏪</span>
+                <div class="modalidade-info">
+                  <strong>Retirar na Loja</strong>
+                  <p>Sem custo de frete</p>
+                </div>
+              </button>
+            </div>
+
+            <!-- RF02: Seleção de Loja para Retirada -->
+            <div *ngIf="modalidadeEntrega === 'retirada'" class="lojas-section">
+              <div class="buscar-lojas-header">
+                <h4>Selecione uma loja para retirada</h4>
+                <button
+                  type="button"
+                  class="btn-buscar-lojas"
+                  (click)="buscarLojasProximas()"
+                  [disabled]="!checkoutForm.get('cep')?.value">
+                  📍 Buscar lojas próximas ao CEP
+                </button>
+              </div>
+
+              <div *ngIf="!mostrarLojas && lojasDisponiveis.length > 0" class="lojas-info">
+                <p>💡 Temos {{ lojasDisponiveis.length }} lojas disponíveis. Informe seu CEP para ver as mais próximas.</p>
+              </div>
+
+              <div *ngIf="mostrarLojas && lojasDisponiveis.length > 0" class="lojas-lista">
+                <div
+                  *ngFor="let loja of lojasDisponiveis"
+                  class="loja-card"
+                  [class.selected]="lojaSelecionada?.id === loja.id"
+                  (click)="selecionarLoja(loja)">
+
+                  <div class="loja-header">
+                    <div class="loja-radio">
+                      <input
+                        type="radio"
+                        [checked]="lojaSelecionada?.id === loja.id"
+                        [id]="'loja-' + loja.id"
+                        name="loja">
+                    </div>
+                    <div class="loja-info">
+                      <h5>{{ loja.nome }}</h5>
+                      <p class="loja-endereco">{{ getEnderecoLoja(loja) }}</p>
+                      <p class="loja-horario">⏰ {{ loja.horarioFuncionamento }}</p>
+                      <p class="loja-telefone">📞 {{ loja.telefone }}</p>
+                      <div *ngIf="loja.distancia" class="loja-distancia">
+                        <span class="badge-distancia">📍 {{ loja.distancia }} km</span>
+                        <span class="badge-tempo">🕐 {{ loja.tempoEstimado }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="lojaSelecionada" class="loja-selecionada-badge">
+                ✅ Loja selecionada: <strong>{{ lojaSelecionada.nome }}</strong>
+              </div>
             </div>
           </div>
 
