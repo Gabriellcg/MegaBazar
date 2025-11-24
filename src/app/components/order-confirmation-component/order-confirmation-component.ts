@@ -55,7 +55,14 @@ export class OrderConfirmationComponent implements OnInit {
           estado: 'SP',
           cep: '01001-000'
         },
-        prazoEntrega: '2 dias'
+        prazoEntrega: '2 dias',
+        dadosCliente: {
+          nome: 'João Silva',
+          email: 'joao@email.com',
+          telefone: '(11) 99999-9999',
+          cpf: '123.456.789-00'
+        },
+        status: 'aguardando_pagamento'
       };
       this.loading = false;
     }
@@ -98,5 +105,4 @@ export class OrderConfirmationComponent implements OnInit {
   calcularSubtotalItem(preco: number, quantidade: number): number {
     return preco * quantidade;
   }
-
 }

@@ -37,6 +37,13 @@
               <circle cx="12" cy="7" r="4"/>
             </svg>
           </button>
+          <button class="icon-btn" [routerLink]="['/meus-pedidos']" title="Meus Pedidos">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18"/>
+              <path d="M9 21V9"/>
+            </svg>
+          </button>
           <button class="icon-btn cart-btn" [routerLink]="['/carrinho']">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <circle cx="9" cy="21" r="1"/>
@@ -110,7 +117,7 @@
 
               <!-- Preços -->
               <p class="old-price" *ngIf="produto.precoAntigo">
-                R$ {{ produto.precoAntigo  }}
+                R$ {{ produto.precoAntigo }}
               </p>
 
               <p class="price">
@@ -160,7 +167,7 @@
 
               <!-- Preços -->
               <p class="price">
-                R$ {{ produto.preco  }}
+                R$ {{ produto.preco }}
               </p>
 
               <p class="installments">

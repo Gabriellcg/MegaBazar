@@ -13,7 +13,7 @@ import { ProdutosService } from '../../services/produtos.service';
 })
 export class Checkout implements OnInit {
 
-  checkoutForm!: FormGroup;
+   checkoutForm!: FormGroup;
   itens: ItemCarrinho[] = [];
   subtotal: number = 0;
   frete: number = 0;
@@ -26,7 +26,7 @@ export class Checkout implements OnInit {
     private fb: FormBuilder,
     private carrinhoService: ProdutosService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.carregarCarrinho();
@@ -174,13 +174,13 @@ export class Checkout implements OnInit {
         telefone: formData.telefone,
         cpf: formData.cpf
       },
-      status: 'aguardando_pagamento'
+      status: 'aguardando_pagamento' as const
     };
 
     console.log('Pedido finalizado:', pedido);
 
-    // Salvar no localStorage
-    localStorage.setItem('ultimoPedido', JSON.stringify(pedido));
+    // Adicionar pedido ao service
+    this.carrinhoService.adicionarPedido(pedido);
 
     // Limpar carrinho
     this.carrinhoService.limparCarrinho();
@@ -217,5 +217,4 @@ export class Checkout implements OnInit {
   formatarPreco(valor: number): string {
     return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
-
 }

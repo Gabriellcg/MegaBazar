@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ItemCarrinho, Produto, ProdutosData } from '../home/models/estrutura';
+import { ItemCarrinho, Pedido, Produto, ProdutosData } from '../home/models/estrutura';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -10,11 +10,13 @@ export class ProdutosService {
 
   private itensSubject = new BehaviorSubject<ItemCarrinho[]>([]);
   public itens$: Observable<ItemCarrinho[]> = this.itensSubject.asObservable();
-
+  private pedidosSubject = new BehaviorSubject<Pedido[]>([]);
+  public pedidos$: Observable<Pedido[]> = this.pedidosSubject.asObservable();
   private jsonUrl = 'assets/data/produtos.json';
 
   constructor(private http: HttpClient) {
     this.carregarDoLocalStorage();
+    this.carregarPedidos();
   }
 
   getProdutos(): Observable<ProdutosData> {
@@ -90,6 +92,64 @@ export class ProdutosService {
   limparCarrinho(): void {
     this.itensSubject.next([]);
     localStorage.removeItem('carrinho');
+  }
+
+  private carregarPedidos(): void {
+    const pedidosSalvos = localStorage.getItem('pedidos');
+    if (pedidosSalvos) {
+      const pedidos = JSON.parse(pedidosSalvos);
+      // Converter strings de data de volta para Date
+      pedidos.forEach((p: Pedido) => {
+        p.data = new Date(p.data);
+        if (p.dataAtualizacao) {
+          p.dataAtualizacao = new Date(p.dataAtualizacao);
+        }
+      });
+      this.pedidosSubject.next(pedidos);
+    }
+  }
+
+  private salvarPedidos(): void {
+    localStorage.setItem('pedidos', JSON.stringify(this.pedidosSubject.value));
+  }
+
+  adicionarPedido(pedido: Pedido): void {
+    const pedidosAtuais = this.pedidosSubject.value;
+    this.pedidosSubject.next([pedido, ...pedidosAtuais]);
+    this.salvarPedidos();
+
+    // Salvar também como último pedido para a página de confirmação
+    localStorage.setItem('ultimoPedido', JSON.stringify(pedido));
+  }
+
+  getPedidos(): Pedido[] {
+    return this.pedidosSubject.value;
+  }
+
+  getPedidoPorNumero(numero: string): Pedido | undefined {
+    return this.pedidosSubject.value.find(p => p.numero === numero);
+  }
+
+  atualizarStatus(numero: string, novoStatus: Pedido['status']): void {
+    const pedidos = this.pedidosSubject.value;
+    const pedido = pedidos.find(p => p.numero === numero);
+
+    if (pedido) {
+      pedido.status = novoStatus;
+      pedido.dataAtualizacao = new Date();
+      this.pedidosSubject.next([...pedidos]);
+      this.salvarPedidos();
+    }
+  }
+
+  getTotalPedidos(): number {
+    return this.pedidosSubject.value.length;
+  }
+
+  limparPedidos(): void {
+    this.pedidosSubject.next([]);
+    localStorage.removeItem('pedidos');
+    localStorage.removeItem('ultimoPedido');
   }
 }
 

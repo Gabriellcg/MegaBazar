@@ -46,4 +46,12 @@ export interface Pedido {
     cep: string;
   };
   prazoEntrega: string;
+  dadosCliente: {
+    nome: string;
+    email: string;
+    telefone: string;
+    cpf: string;
+  };
+  status: 'aguardando_pagamento' | 'pagamento_confirmado' | 'em_separacao' | 'em_transporte' | 'entregue' | 'cancelado';
+  dataAtualizacao?: Date;
 }

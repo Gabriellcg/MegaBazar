@@ -1,0 +1,231 @@
+<!-- meus-pedidos.component.html -->
+<div class="meus-pedidos-container">
+
+  <!-- Banner -->
+  <div class="promo-banner">
+    Para frete grátis em pedidos acima de R$100,00 ou mais, use o código FRETEFREE
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <h1 class="logo" [routerLink]="['/']">MegaLoja Online</h1>
+
+        <div class="search-bar">
+          <input type="text" placeholder="Buscar produtos..." class="search-input">
+          <button class="search-btn">🔍</button>
+        </div>
+
+        <div class="header-icons">
+          <button class="icon-btn">👤</button>
+          <button class="icon-btn active">📦</button>
+          <button class="icon-btn" [routerLink]="['/carrinho']">🛒</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <div class="container">
+      <button class="back-btn" (click)="voltarParaHome()">← Voltar</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <p>Carregando seus pedidos...</p>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content" *ngIf="!loading">
+    <div class="container">
+
+      <h1 class="page-title">Meus Pedidos</h1>
+
+      <!-- Pedidos Vazios -->
+      <div *ngIf="pedidos.length === 0" class="empty-orders">
+        <div class="empty-icon">📦</div>
+        <h2>Você ainda não fez nenhum pedido</h2>
+        <p>Explore nossos produtos e faça sua primeira compra!</p>
+        <button class="btn-primary" (click)="voltarParaHome()">
+          Ver Produtos
+        </button>
+      </div>
+
+      <!-- Lista de Pedidos -->
+      <div *ngIf="pedidos.length > 0" class="orders-content">
+
+        <div class="orders-list">
+          <div
+            class="order-card"
+            *ngFor="let pedido of pedidos"
+            [class.selected]="pedidoSelecionado?.numero === pedido.numero"
+            (click)="selecionarPedido(pedido)">
+
+            <div class="order-header">
+              <div class="order-info">
+                <span class="order-number">{{ pedido.numero }}</span>
+                <span class="order-date">{{ formatarData(pedido.data) }}</span>
+              </div>
+              <span class="order-status" [ngClass]="getStatusClass(pedido.status)">
+                {{ getStatusTexto(pedido.status) }}
+              </span>
+            </div>
+
+            <div class="order-body">
+              <div class="order-items-preview">
+                <div
+                  class="item-preview"
+                  *ngFor="let item of pedido.itens.slice(0, 3)">
+                  <img [src]="item.imagem" [alt]="item.nome">
+                </div>
+                <div class="more-items" *ngIf="pedido.itens.length > 3">
+                  +{{ pedido.itens.length - 3 }}
+                </div>
+              </div>
+
+              <div class="order-summary">
+                <p class="total-items">{{ pedido.itens.length }} {{ pedido.itens.length === 1 ? 'item' : 'itens' }}</p>
+                <p class="total-value">R$ {{ formatarPreco(pedido.total) }}</p>
+              </div>
+            </div>
+
+            <div class="order-footer">
+              <button class="btn-small btn-outline" (click)="rastrearPedido(pedido); $event.stopPropagation()">
+                Rastrear
+              </button>
+              <button class="btn-small btn-primary" (click)="selecionarPedido(pedido); $event.stopPropagation()">
+                Ver detalhes
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal de Detalhes -->
+  <div class="modal-overlay" *ngIf="pedidoSelecionado" (click)="fecharDetalhes()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>Pedido pronto para retirada</h2>
+        <button class="btn-close" (click)="fecharDetalhes()">×</button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Informações do Pedido -->
+        <div class="pedido-info-section">
+          <p class="pedido-numero">Número do Pedido: <strong>{{ pedidoSelecionado.numero }}</strong></p>
+          <p class="pedido-data">{{ formatarData(pedidoSelecionado.data) }}</p>
+        </div>
+
+        <!-- Itens do Pedido -->
+        <div class="pedido-items">
+          <div class="item-detail" *ngFor="let item of pedidoSelecionado.itens">
+            <div class="item-image" (click)="irParaProduto(item.id)">
+              <img [src]="item.imagem" [alt]="item.nome">
+            </div>
+            <div class="item-info">
+              <h4 (click)="irParaProduto(item.id)">{{ item.nome }}</h4>
+              <p class="item-price">R$ {{ formatarPreco(item.preco) }} /un Qtd.</p>
+              <p class="item-qty">Quantidade: {{ item.quantidade }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quantidade/Resumo -->
+        <div class="pedido-resumo">
+          <h3>Quantidade</h3>
+          <div class="resumo-line">
+            <span>Subtotal:</span>
+            <span>R$ {{ formatarPreco(pedidoSelecionado.subtotal) }}</span>
+          </div>
+          <div class="resumo-line">
+            <span>Frete:</span>
+            <span [class.free]="pedidoSelecionado.frete === 0">
+              {{ pedidoSelecionado.frete === 0 ? 'GRÁTIS' : 'R$ ' + formatarPreco(pedidoSelecionado.frete) }}
+            </span>
+          </div>
+          <div class="resumo-line total">
+            <span>Total:</span>
+            <span>R$ {{ formatarPreco(pedidoSelecionado.total) }}</span>
+          </div>
+        </div>
+
+        <!-- Endereço -->
+        <div class="pedido-endereco">
+          <h3>Endereço de entrega</h3>
+          <p><strong>{{ pedidoSelecionado.endereco.logradouro }}, {{ pedidoSelecionado.endereco.numero }}</strong></p>
+          <p *ngIf="pedidoSelecionado.endereco.complemento">{{ pedidoSelecionado.endereco.complemento }}</p>
+          <p>{{ pedidoSelecionado.endereco.bairro }}</p>
+          <p>{{ pedidoSelecionado.endereco.cidade }} - {{ pedidoSelecionado.endereco.estado }}</p>
+          <p>CEP: {{ pedidoSelecionado.endereco.cep }}</p>
+        </div>
+
+        <!-- Informações Adicionais -->
+        <div class="pedido-extras">
+          <p>📧 Você receberá um e-mail quando voltar pronto para retirada</p>
+          <p>📍 Rua Principal, 100 - Centro, {{ pedidoSelecionado.endereco.cidade }}</p>
+          <p>⏰ Prazo para retirada: {{ pedidoSelecionado.prazoEntrega }}</p>
+        </div>
+
+        <!-- Ações -->
+        <div class="modal-actions">
+          <button class="btn-action btn-track" (click)="rastrearPedido(pedidoSelecionado)">
+            Ver mapa e direções
+          </button>
+          <button class="btn-action btn-reorder" (click)="recomprar(pedidoSelecionado)">
+            Acompanhar pedido
+          </button>
+          <button class="btn-action btn-home" (click)="voltarParaHome()">
+            Voltar para home
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <h3>Ajuda</h3>
+          <ul>
+            <li>SAC</li>
+            <li>Trocas e devoluções</li>
+            <li>Meus pedidos</li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Sobre</h3>
+          <ul>
+            <li>Sobre nós</li>
+            <li>Trabalhe conosco</li>
+            <li>Privacidade</li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Redes Sociais</h3>
+          <ul>
+            <li>Facebook</li>
+            <li>Instagram</li>
+            <li>Twitter</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 MegaLoja Online. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+</div>
