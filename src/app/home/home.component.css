@@ -132,6 +132,7 @@
   border: none;
   cursor: pointer;
   padding: 8px;
+  font-size: 24px;
   color: var(--text-dark);
   position: relative;
   transition: var(--transition);
@@ -158,9 +159,6 @@
   text-align: center;
 }
 
-/* ============================================
-   MAIN CONTENT
-   ============================================ */
 .main-content {
   padding: 40px 0;
   min-height: 60vh;
@@ -189,9 +187,13 @@
   border-color: var(--secondary-color);
 }
 
-/* ============================================
-   MENSAGENS
-   ============================================ */
+.resultado-count {
+  font-size: 18px;
+  color: var(--text-medium);
+  font-weight: 500;
+  margin-left: 8px;
+}
+
 .loading-message,
 .error-message,
 .no-products {

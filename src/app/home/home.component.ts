@@ -2,21 +2,28 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Produto, ProdutosData } from './models/estrutura';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ProdutosService } from '../services/produtos.service';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
   promocoes: Produto[] = [];
   lancamentos: Produto[] = [];
+  promocoesFiltradas: Produto[] = [];
+  lancamentosFiltrados: Produto[] = [];
   carrinhoCount: number = 0;
   menuAberto: boolean = false;
   loading: boolean = false;
   erro: string = '';
+
+  // Busca
+  termoBusca: string = '';
+  buscaAtiva: boolean = false;
 
   constructor(
     private produtosService: ProdutosService,
@@ -49,6 +56,11 @@ export class HomeComponent implements OnInit {
         // Garantir que os dados sejam atribuídos corretamente
         this.promocoes = Array.isArray(data.promocoes) ? [...data.promocoes] : [];
         this.lancamentos = Array.isArray(data.lancamentos) ? [...data.lancamentos] : [];
+
+        // 🔥 CORREÇÃO: Inicializar os arrays filtrados
+        this.promocoesFiltradas = [...this.promocoes];
+        this.lancamentosFiltrados = [...this.lancamentos];
+
         this.loading = false;
 
         console.log('📦 Promoções atribuídas:', this.promocoes);
@@ -70,6 +82,7 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+
   calcularDesconto(produto: Produto): number {
     if (produto.precoAntigo) {
       return Math.round((1 - produto.preco / produto.precoAntigo) * 100);
@@ -97,5 +110,39 @@ export class HomeComponent implements OnInit {
 
   isEstrelaPreenchida(estrela: number, rating: number): boolean {
     return estrela <= Math.floor(rating);
+  }
+
+  // Método de busca
+  buscarProdutos(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.termoBusca = input.value.toLowerCase().trim();
+
+    if (this.termoBusca === '') {
+      // Se vazio, mostra todos
+      this.promocoesFiltradas = [...this.promocoes];
+      this.lancamentosFiltrados = [...this.lancamentos];
+      this.buscaAtiva = false;
+    } else {
+      // Filtra produtos
+      this.buscaAtiva = true;
+
+      this.promocoesFiltradas = this.promocoes.filter(produto =>
+        produto.nome.toLowerCase().includes(this.termoBusca)
+      );
+
+      this.lancamentosFiltrados = this.lancamentos.filter(produto =>
+        produto.nome.toLowerCase().includes(this.termoBusca)
+      );
+
+      console.log(`🔍 Busca: "${this.termoBusca}" - Encontrados: ${this.promocoesFiltradas.length + this.lancamentosFiltrados.length} produtos`);
+    }
+  }
+
+  // Limpar busca
+  limparBusca(): void {
+    this.termoBusca = '';
+    this.promocoesFiltradas = [...this.promocoes];
+    this.lancamentosFiltrados = [...this.lancamentos];
+    this.buscaAtiva = false;
   }
 }
