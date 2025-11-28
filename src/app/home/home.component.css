@@ -1,8 +1,4 @@
-/* home.component.css */
 
-/* ============================================
-   RESET E VARIÁVEIS
-   ============================================ */
 * {
   margin: 0;
   padding: 0;
@@ -27,9 +23,6 @@
   --transition: all 0.3s ease;
 }
 
-/* ============================================
-   LAYOUT GERAL
-   ============================================ */
 .home-container {
   min-height: 100vh;
   background: var(--bg-light);
@@ -42,9 +35,6 @@
   padding: 0 20px;
 }
 
-/* ============================================
-   HEADER
-   ============================================ */
 .header {
   background: var(--bg-white);
   box-shadow: var(--shadow-md);
@@ -78,7 +68,6 @@
   white-space: nowrap;
 }
 
-/* Barra de Busca */
 .search-bar {
   display: flex;
   flex: 1;
@@ -120,7 +109,6 @@
   background: var(--primary-dark);
 }
 
-/* Ícones do Header */
 .header-icons {
   display: flex;
   gap: 12px;
@@ -232,9 +220,6 @@
   50% { opacity: 0.5; }
 }
 
-/* ============================================
-   GRID DE PRODUTOS
-   ============================================ */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -245,9 +230,6 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
-/* ============================================
-   CARD DO PRODUTO
-   ============================================ */
 .product-card {
   background: var(--bg-white);
   border-radius: 12px;
@@ -264,7 +246,6 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Imagem do Produto */
 .product-image {
   position: relative;
   height: 220px;
@@ -299,7 +280,6 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* Informações do Produto */
 .product-info {
   padding: 16px;
   display: flex;
@@ -320,7 +300,6 @@
   line-height: 1.4;
 }
 
-/* Rating */
 .rating {
   display: flex;
   align-items: center;
@@ -345,7 +324,6 @@
   font-weight: 500;
 }
 
-/* Preços */
 .old-price {
   font-size: 13px;
   color: var(--text-light);
@@ -366,7 +344,6 @@
   margin-bottom: 16px;
 }
 
-/* Botão */
 .btn-add-cart {
   width: 100%;
   padding: 12px;
@@ -391,9 +368,6 @@
   transform: translateY(0);
 }
 
-/* ============================================
-   FOOTER
-   ============================================ */
 .footer {
   background: #1f2937;
   color: white;
@@ -432,9 +406,7 @@
   font-size: 14px;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+
 @media (max-width: 768px) {
   .menu-btn {
     display: block;

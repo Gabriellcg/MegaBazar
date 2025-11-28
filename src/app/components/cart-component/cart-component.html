@@ -1,7 +1,5 @@
-<!-- cart.component.html -->
 <div class="cart-container">
 
-  <!-- Header -->
   <header class="header">
     <div class="container">
       <div class="header-content">
@@ -16,13 +14,13 @@
     </div>
   </header>
 
-  <!-- Main Content -->
+
   <main class="main-content">
     <div class="container">
 
       <h1 class="page-title">Meu carrinho</h1>
 
-      <!-- Carrinho Vazio -->
+
       <div *ngIf="itens.length === 0" class="empty-cart">
         <div class="empty-icon">🛒</div>
         <h2>Seu carrinho está vazio</h2>
@@ -32,10 +30,8 @@
         </button>
       </div>
 
-      <!-- Carrinho com Itens -->
       <div *ngIf="itens.length > 0" class="cart-content">
 
-        <!-- Lista de Itens -->
         <div class="cart-items">
           <div class="cart-header-actions">
             <span class="items-count">{{ itens.length }} {{ itens.length === 1 ? 'item' : 'itens' }}</span>
@@ -44,7 +40,9 @@
             </button>
           </div>
 
-          <div class="item-card" *ngFor="let item of itens">
+          <div class="item-card" *ngFor="let item of itens" [class.item-erro-estoque]="temErroEstoque(item.produto.id)"
+            [class.item-aviso-estoque]="temAvisoEstoque(item.produto.id)">
+
             <div class="item-image" (click)="irParaProduto(item.produto.id)">
               <img [src]="item.produto.imagem" [alt]="item.produto.nome">
             </div>
@@ -56,32 +54,41 @@
 
               <div class="item-price-section">
                 <p class="item-price">
-                  R$ {{ item.produto.preco }}
+                  R$ {{ formatarNumero(item.produto.preco) }}
                 </p>
                 <p class="item-installments">
-                  {{ item.produto.parcelas }}x de R$ {{ calcularParcela(item.produto.preco, item.produto.parcelas) }}
+                  {{ item.produto.parcelas }}x de R$ {{ formatarNumero(calcularParcela(item.produto.preco,
+                  item.produto.parcelas)) }}
                 </p>
               </div>
 
+              <div class="estoque-container" *ngIf="getMensagemEstoque(item.produto.id)">
+                <div class="estoque-badge" [class.estoque-erro]="temErroEstoque(item.produto.id)"
+                  [class.estoque-aviso]="temAvisoEstoque(item.produto.id)">
+                  <span class="estoque-icon">
+                    {{ temErroEstoque(item.produto.id) ? '⚠️' : 'ℹ️' }}
+                  </span>
+                  <span class="estoque-texto">
+                    {{ getMensagemEstoque(item.produto.id) }}
+                  </span>
+                </div>
+              </div>
+
               <div class="item-actions">
-                <!-- Controle de Quantidade -->
                 <div class="quantity-control">
-                  <button
-                    class="qty-btn"
-                    (click)="diminuirQuantidade(item)"
-                    [disabled]="item.quantidade <= 1">
+                  <button class="qty-btn" (click)="diminuirQuantidade(item)" [disabled]="item.quantidade <= 1">
                     -
                   </button>
                   <span class="qty-value">{{ item.quantidade }}</span>
-                  <button
-                    class="qty-btn"
-                    (click)="aumentarQuantidade(item)"
-                    [disabled]="item.quantidade >= 10">
+                  <button class="qty-btn" (click)="aumentarQuantidade(item)"
+                    [disabled]="item.quantidade >= item.produto.estoque || item.quantidade >= 10">
                     +
                   </button>
+                  <span class="estoque-disponivel">
+                    ({{ item.produto.estoque }} {{ item.produto.estoque === 1 ? 'disponível' : 'disponíveis' }})
+                  </span>
                 </div>
 
-                <!-- Botão Remover -->
                 <button class="btn-remove" (click)="removerItem(item)">
                   🗑️ Remover
                 </button>
@@ -91,26 +98,25 @@
             <div class="item-subtotal">
               <span class="subtotal-label">Subtotal:</span>
               <span class="subtotal-value">
-                R$ {{ (item.produto.preco * item.quantidade) }}
+                R$ {{ formatarNumero(item.produto.preco * item.quantidade) }}
               </span>
             </div>
           </div>
         </div>
 
-        <!-- Resumo do Pedido -->
         <div class="order-summary">
           <div class="summary-card">
             <h2 class="summary-title">Resumo do pedido</h2>
 
             <div class="summary-line">
               <span>Subtotal ({{ itens.length }} {{ itens.length === 1 ? 'item' : 'itens' }}):</span>
-              <span>R$ {{ subtotal }}</span>
+              <span>R$ {{ formatarNumero(subtotal) }}</span>
             </div>
 
             <div class="summary-line">
               <span>Frete:</span>
               <span [class.free-shipping]="frete === 0">
-                {{ frete === 0 ? 'GRÁTIS' : 'R$ ' + (frete ) }}
+                {{ frete === 0 ? 'GRÁTIS' : 'R$ ' + formatarNumero(frete) }}
               </span>
             </div>
 
@@ -118,12 +124,12 @@
 
             <div class="summary-total">
               <span>Total:</span>
-              <span class="total-value">R$ {{ total  }}</span>
+              <span class="total-value">R$ {{ formatarNumero(total) }}</span>
             </div>
 
             <div class="free-shipping-info" *ngIf="subtotal > 0 && subtotal < 200">
               <p class="info-icon">ℹ️</p>
-              <p>Falta R$ {{ (200 - subtotal) }} para frete grátis!</p>
+              <p>Falta R$ {{ formatarNumero(200 - subtotal) }} para frete grátis!</p>
             </div>
 
             <div class="free-shipping-success" *ngIf="frete === 0 && subtotal > 0">
@@ -131,15 +137,23 @@
               <p>Você ganhou frete grátis!</p>
             </div>
 
-            <button class="btn-checkout" (click)="finalizarCompra()">
-              Finalizar compra
+            <div class="checkout-warning" *ngIf="!podeFinalizarCompra() && itens.length > 0">
+              <p class="warning-icon">⚠️</p>
+              <p class="warning-text">
+                Ajuste as quantidades dos produtos com estoque insuficiente antes de finalizar
+              </p>
+            </div>
+
+            <button class="btn-checkout" (click)="finalizarCompra()" [disabled]="!podeFinalizarCompra()"
+              [class.btn-disabled]="!podeFinalizarCompra()">
+              {{ podeFinalizarCompra() ? 'Finalizar compra' : 'Verifique o estoque' }}
             </button>
 
             <button class="btn-continue" (click)="continuarComprando()">
               Continuar comprando
             </button>
 
-            <!-- Formas de Pagamento -->
+
             <div class="payment-info">
               <p class="payment-title">Formas de pagamento:</p>
               <div class="payment-icons">
@@ -153,7 +167,7 @@
               </p>
             </div>
 
-            <!-- Segurança -->
+
             <div class="security-info">
               <p>🔒 Ambiente seguro</p>
               <p>Seus dados estão protegidos</p>
@@ -166,7 +180,6 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer-content">

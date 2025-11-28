@@ -21,15 +21,12 @@ export class OrderConfirmationComponent implements OnInit {
   }
 
   carregarPedido(): void {
-    // Simular carregamento de pedido
-    // Em produção, pegar do serviço ou state management
     const pedidoSalvo = localStorage.getItem('ultimoPedido');
 
     if (pedidoSalvo) {
       this.pedido = JSON.parse(pedidoSalvo);
       this.loading = false;
     } else {
-      // Criar pedido de exemplo se não existir
       this.pedido = {
         numero: '#CC-789456',
         data: new Date(),

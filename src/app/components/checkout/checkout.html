@@ -1,7 +1,6 @@
-<!-- checkout.component.html -->
+
 <div class="checkout-container">
 
-  <!-- Header com Banner -->
   <div class="promo-banner">
     Para frete grátis em pedidos acima de R$100,00 ou mais, use o código FRETEFREE
   </div>
@@ -25,12 +24,10 @@
     </div>
   </div>
 
-  <!-- Main Content -->
   <main class="main-content">
     <div class="container">
       <div class="checkout-grid">
 
-        <!-- Coluna Esquerda - Visão Geral -->
         <div class="left-column">
           <h2 class="section-title">Visão geral dos itens</h2>
 
@@ -41,7 +38,6 @@
             </p>
           </div>
 
-          <!-- Lista de Itens -->
           <div class="items-list">
             <div class="item-card-mini" *ngFor="let item of itens">
               <div class="item-mini-image">
@@ -55,11 +51,10 @@
             </div>
           </div>
 
-          <!-- Cupom -->
           <div class="cupom-section">
             <h3>Como deseja receber?</h3>
 
-            <!-- RF01: Seleção de Modalidade de Entrega -->
+
             <div class="modalidade-entrega">
               <button
                 type="button"
@@ -86,7 +81,6 @@
               </button>
             </div>
 
-            <!-- RF02: Seleção de Loja para Retirada -->
             <div *ngIf="modalidadeEntrega === 'retirada'" class="lojas-section">
               <div class="buscar-lojas-header">
                 <h4>Selecione uma loja para retirada</h4>
@@ -138,7 +132,7 @@
             </div>
           </div>
 
-          <!-- Informações de Entrega -->
+
           <div class="delivery-section">
             <h3>Informações de frete para entrega:</h3>
             <div class="delivery-info-card">
@@ -162,13 +156,13 @@
 
         </div>
 
-        <!-- Coluna Direita - Formulário -->
+
         <div class="right-column">
           <h2 class="section-title">Detalhes do pagamento</h2>
 
           <form [formGroup]="checkoutForm" (ngSubmit)="finalizarPedido()">
 
-            <!-- Dados Pessoais -->
+
             <div class="form-section">
               <h3 class="form-section-title">Dados</h3>
 
@@ -220,7 +214,7 @@
               </div>
             </div>
 
-            <!-- Endereço -->
+
             <div class="form-section">
               <h3 class="form-section-title">Endereço de entrega</h3>
 
@@ -302,7 +296,7 @@
               </div>
             </div>
 
-            <!-- Tipo de Pagamento -->
+
             <div class="form-section">
               <h3 class="form-section-title">Tipo de pagamento</h3>
 
@@ -337,7 +331,7 @@
                 </button>
               </div>
 
-              <!-- Campos do Cartão -->
+
               <div *ngIf="metodoPagamentoSelecionado === 'credito' || metodoPagamentoSelecionado === 'debito'" class="card-fields">
                 <div class="form-group">
                   <label for="numeroCartao">Número do cartão</label>
@@ -384,14 +378,14 @@
                 </div>
               </div>
 
-              <!-- Info PIX -->
+
               <div *ngIf="metodoPagamentoSelecionado === 'pix'" class="payment-info">
                 <p>✅ Pagamento instantâneo</p>
                 <p>✅ Confirmação imediata</p>
                 <p>O QR Code será gerado após a finalização</p>
               </div>
 
-              <!-- Info Boleto -->
+
               <div *ngIf="metodoPagamentoSelecionado === 'boleto'" class="payment-info">
                 <p>📄 Boleto bancário</p>
                 <p>Prazo de compensação: 1-2 dias úteis</p>
@@ -399,7 +393,7 @@
               </div>
             </div>
 
-            <!-- Resumo Final -->
+
             <div class="final-summary">
               <div class="summary-line">
                 <span>Subtotal:</span>
@@ -417,7 +411,7 @@
               </div>
             </div>
 
-            <!-- Botão Finalizar -->
+
             <button type="submit" class="btn-finalizar" [disabled]="checkoutForm.invalid">
               Finalizar pedido
             </button>
@@ -429,7 +423,6 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer-content">

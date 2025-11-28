@@ -1,4 +1,4 @@
-/* order-confirmation.component.css */
+
 
 :host {
   --primary-color: #2563eb;
@@ -23,7 +23,6 @@
   padding: 0 20px;
 }
 
-/* Promo Banner */
 .promo-banner {
   background: #1f2937;
   color: white;
@@ -32,7 +31,6 @@
   font-size: 14px;
 }
 
-/* Header */
 .header {
   background: var(--bg-white);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -89,7 +87,6 @@
   cursor: pointer;
 }
 
-/* Breadcrumb */
 .breadcrumb {
   background: var(--bg-white);
   padding: 12px 0;
@@ -105,7 +102,6 @@
   cursor: pointer;
 }
 
-/* Loading */
 .loading-container {
   text-align: center;
   padding: 100px 20px;
@@ -113,12 +109,10 @@
   color: var(--text-medium);
 }
 
-/* Main Content */
 .main-content {
   padding: 40px 0;
 }
 
-/* Success Header */
 .success-header {
   text-align: center;
   margin-bottom: 40px;
@@ -160,14 +154,12 @@
   color: var(--text-light);
 }
 
-/* Grid Layout */
 .order-grid {
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 30px;
 }
 
-/* Left Column */
 .left-column {
   display: flex;
   flex-direction: column;
@@ -188,7 +180,6 @@
   margin-bottom: 24px;
 }
 
-/* Order Items */
 .order-items {
   display: flex;
   flex-direction: column;
@@ -262,7 +253,6 @@
   color: var(--primary-color);
 }
 
-/* Action Buttons */
 .action-buttons {
   display: flex;
   flex-direction: column;
@@ -311,7 +301,6 @@
   background: var(--bg-light);
 }
 
-/* Info Box */
 .info-box {
   background: #fef3c7;
   border-left: 4px solid #f59e0b;
@@ -326,7 +315,6 @@
   margin: 0;
 }
 
-/* Right Column */
 .right-column {
   display: flex;
   flex-direction: column;
@@ -352,7 +340,6 @@
   border-bottom: 2px solid var(--border-color);
 }
 
-/* Summary Info */
 .summary-info {
   margin-bottom: 20px;
 }
@@ -406,7 +393,6 @@
   color: var(--text-medium);
 }
 
-/* Address Card */
 .address-content,
 .payment-content {
   font-size: 14px;
@@ -425,7 +411,6 @@
   margin-top: 8px;
 }
 
-/* Timeline */
 .timeline {
   position: relative;
 }
@@ -506,7 +491,6 @@
   margin-bottom: 30px;
 }
 
-/* Footer */
 .footer {
   background: #1f2937;
   color: white;
@@ -565,7 +549,6 @@
   margin-top: 16px;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .order-grid {
     grid-template-columns: 1fr;

@@ -1,4 +1,4 @@
-/* cart.component.css */
+
 
 :host {
   --primary-color: #2563eb;
@@ -562,5 +562,143 @@
 
   .footer-content {
     grid-template-columns: 1fr;
+  }
+}
+
+.estoque-container {
+  margin: 8px 0;
+}
+
+// Badge de estoque
+.estoque-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+
+  .estoque-icon {
+    font-size: 14px;
+  }
+
+  .estoque-texto {
+    line-height: 1.2;
+  }
+}
+
+// Badge de aviso (estoque baixo)
+.estoque-badge.estoque-aviso {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+}
+
+// Badge de erro (sem estoque ou quantidade excedida)
+.estoque-badge.estoque-erro {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+// Estilo do card quando tem erro de estoque
+.item-card.item-erro-estoque {
+  border: 2px solid #dc3545;
+  background-color: #fff5f5;
+}
+
+// Estilo do card quando tem aviso de estoque
+.item-card.item-aviso-estoque {
+  background-color: #fffef7;
+}
+
+// Indicador de estoque disponível
+.estoque-disponivel {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+// Aviso de checkout (no resumo do pedido)
+.checkout-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 16px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  .warning-icon {
+    font-size: 20px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .warning-text {
+    margin: 0;
+    font-size: 13px;
+    color: #856404;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+}
+
+// Botão desabilitado
+.btn-checkout.btn-disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+
+  &:hover {
+    background-color: #6c757d;
+    transform: none;
+  }
+}
+
+// Botões de quantidade desabilitados
+.qty-btn:disabled {
+  background-color: #e9ecef;
+  color: #adb5bd;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
+    background-color: #e9ecef;
+    transform: none;
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .estoque-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+
+    .estoque-icon {
+      font-size: 12px;
+    }
+  }
+
+  .estoque-disponivel {
+    display: block;
+    margin-left: 0;
+    margin-top: 4px;
+    font-size: 11px;
+  }
+
+  .checkout-warning {
+    padding: 10px;
+
+    .warning-icon {
+      font-size: 18px;
+    }
+
+    .warning-text {
+      font-size: 12px;
+    }
   }
 }

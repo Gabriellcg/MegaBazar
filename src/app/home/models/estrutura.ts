@@ -8,6 +8,7 @@ export interface Produto {
   parcelas: number;
   categoria?: string;
   descricao?: string;
+  estoque: number;
 }
 
 export interface ProdutosData {
@@ -70,7 +71,7 @@ export interface Loja {
   };
   telefone: string;
   horarioFuncionamento: string;
-  distancia?: number; // em km
+  distancia?: number; 
   tempoEstimado?: string;
   disponivel: boolean;
 }

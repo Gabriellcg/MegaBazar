@@ -23,7 +23,6 @@ export class Checkout implements OnInit {
   metodoPagamentoSelecionado: string = '';
   enderecoSelecionado: string = '';
 
-  // RF01 e RF02: Modalidade de entrega e lojas
   modalidadeEntrega: 'entrega' | 'retirada' = 'entrega';
   lojasDisponiveis: Loja[] = [];
   lojaSelecionada: Loja | null = null;
@@ -43,13 +42,13 @@ export class Checkout implements OnInit {
 
   inicializarFormulario(): void {
     this.checkoutForm = this.fb.group({
-      // Dados pessoais
+
       nomeCompleto: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       telefone: ['', [Validators.required, Validators.minLength(10)]],
       cpf: ['', [Validators.required, Validators.minLength(11)]],
 
-      // Endereço
+
       cep: ['', [Validators.required, Validators.minLength(8)]],
       endereco: ['', Validators.required],
       numero: ['', Validators.required],
@@ -58,7 +57,7 @@ export class Checkout implements OnInit {
       cidade: ['', Validators.required],
       estado: ['', Validators.required],
 
-      // Pagamento
+
       metodoPagamento: ['', Validators.required],
       numeroCartao: [''],
       nomeCartao: [''],
@@ -77,7 +76,7 @@ export class Checkout implements OnInit {
   calcularValores(): void {
     this.subtotal = this.pedidosService.getSubtotal();
 
-    // RF01: Frete só se for entrega
+
     if (this.modalidadeEntrega === 'entrega') {
       if (this.subtotal >= 200) {
         this.frete = 0;
@@ -87,31 +86,31 @@ export class Checkout implements OnInit {
         this.frete = 0;
       }
     } else {
-      // Retirada na loja = sem frete
+
       this.frete = 0;
     }
 
     this.total = this.subtotal + this.frete;
   }
 
-  // RF01: Selecionar modalidade de entrega
+
   selecionarModalidadeEntrega(modalidade: 'entrega' | 'retirada'): void {
     this.modalidadeEntrega = modalidade;
     this.calcularValores();
 
     if (modalidade === 'retirada') {
-      // Desabilitar validação de endereço para retirada
+
       this.checkoutForm.get('endereco')?.clearValidators();
       this.checkoutForm.get('numero')?.clearValidators();
       this.checkoutForm.get('bairro')?.clearValidators();
       this.checkoutForm.get('cidade')?.clearValidators();
       this.checkoutForm.get('estado')?.clearValidators();
 
-      // Carregar todas as lojas
+
       this.lojasDisponiveis = this.lojasService.getTodasLojas();
       this.mostrarLojas = false;
     } else {
-      // Reativar validação de endereço para entrega
+
       this.checkoutForm.get('endereco')?.setValidators([Validators.required]);
       this.checkoutForm.get('numero')?.setValidators([Validators.required]);
       this.checkoutForm.get('bairro')?.setValidators([Validators.required]);
@@ -123,7 +122,7 @@ export class Checkout implements OnInit {
       this.mostrarLojas = false;
     }
 
-    // Atualizar validações
+
     this.checkoutForm.get('endereco')?.updateValueAndValidity();
     this.checkoutForm.get('numero')?.updateValueAndValidity();
     this.checkoutForm.get('bairro')?.updateValueAndValidity();
@@ -131,7 +130,7 @@ export class Checkout implements OnInit {
     this.checkoutForm.get('estado')?.updateValueAndValidity();
   }
 
-  // RF02: Buscar lojas próximas ao CEP
+
   buscarLojasProximas(): void {
     const cep = this.checkoutForm.get('cep')?.value?.replace(/\D/g, '');
 
@@ -143,13 +142,13 @@ export class Checkout implements OnInit {
     }
   }
 
-  // RF02: Selecionar loja para retirada
+
   selecionarLoja(loja: Loja): void {
     this.lojaSelecionada = loja;
-    console.log('Loja selecionada:', loja);
+
   }
 
-  // Obter endereço completo da loja
+
   getEnderecoLoja(loja: Loja): string {
     return this.lojasService.getEnderecoCompleto(loja);
   }
@@ -183,7 +182,6 @@ export class Checkout implements OnInit {
     this.metodoPagamentoSelecionado = metodo;
     this.checkoutForm.patchValue({ metodoPagamento: metodo });
 
-    // Validações condicionais
     if (metodo === 'credito' || metodo === 'debito') {
       this.checkoutForm.get('numeroCartao')?.setValidators([Validators.required]);
       this.checkoutForm.get('nomeCartao')?.setValidators([Validators.required]);
@@ -209,7 +207,6 @@ export class Checkout implements OnInit {
       return;
     }
 
-    // Validar modalidade de retirada
     if (this.modalidadeEntrega === 'retirada' && !this.lojaSelecionada) {
       alert('Por favor, selecione uma loja para retirada!');
       return;
@@ -220,6 +217,25 @@ export class Checkout implements OnInit {
       this.marcarCamposComoTocados();
       return;
     }
+
+    const validacao = this.pedidosService.validarCarrinhoParaCheckout();
+
+    if (!validacao.valido) {
+      alert('⚠️ Erro ao validar carrinho:\n\n' + validacao.problemas.join('\n'));
+      return;
+    }
+
+
+    const resultadoEstoque = this.pedidosService.decrementarEstoque(this.itens);
+
+    if (!resultadoEstoque.sucesso) {
+      alert('❌ Erro ao atualizar estoque:\n\n' + resultadoEstoque.mensagem);
+      return;
+    }
+
+
+
+
 
     const formData = this.checkoutForm.value;
     const numeroPedido = '#CC-' + Math.floor(Math.random() * 900000 + 100000);
@@ -264,16 +280,12 @@ export class Checkout implements OnInit {
       status: 'aguardando_pagamento' as const
     };
 
-    console.log('Pedido finalizado:', pedido);
-
-    // Adicionar pedido ao service
     this.pedidosService.adicionarPedido(pedido as any);
 
-    // Limpar carrinho
     this.pedidosService.limparCarrinho();
 
-    // Redirecionar para página de confirmação
     this.router.navigate(['/pedido-confirmado']);
+
   }
 
   getFormaPagamentoTexto(): string {

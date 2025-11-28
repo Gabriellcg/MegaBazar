@@ -48,6 +48,7 @@ export class MeusPedidos implements OnInit {
     this.router.navigate(['/produto', produtoId]);
   }
 
+
   getStatusTexto(status: string): string {
     const statusMap: { [key: string]: string } = {
       'aguardando_pagamento': 'Aguardando pagamento',
@@ -90,23 +91,77 @@ export class MeusPedidos implements OnInit {
     });
   }
 
+  /**
+   * Calcula o total de itens somando todas as quantidades
+   * @param pedido Pedido para calcular
+   * @returns Número total de itens (considerando quantidades)
+   */
+  calcularTotalItens(pedido: Pedido): number {
+    return pedido.itens.reduce((total, item) => {
+      return total + (item.quantidade || 1);
+    }, 0);
+  }
+
+  /**
+   * Calcula o subtotal de um item
+   * @param preco Preço unitário
+   * @param quantidade Quantidade do item
+   * @returns Subtotal do item
+   */
   calcularSubtotalItem(preco: number, quantidade: number): number {
     return preco * quantidade;
   }
 
+  /**
+   * Obtém a quantidade de um item (com fallback para 1)
+   * @param item Item do pedido
+   * @returns Quantidade do item
+   */
+  getQuantidadeItem(item: any): number {
+    return item.quantidade || 1;
+  }
+
   rastrearPedido(pedido: Pedido): void {
-    alert(`Rastreamento do pedido ${pedido.numero}\n\nStatus: ${this.getStatusTexto(pedido.status)}\n\nCódigo de rastreamento será enviado por e-mail.`);
+    const totalItens = this.calcularTotalItens(pedido);
+    alert(
+      `Rastreamento do pedido ${pedido.numero}\n\n` +
+      `Status: ${this.getStatusTexto(pedido.status)}\n` +
+      `Total de itens: ${totalItens}\n\n` +
+      `Código de rastreamento será enviado por e-mail.`
+    );
   }
 
   cancelarPedido(pedido: Pedido): void {
+    if (pedido.status !== 'aguardando_pagamento') {
+      alert('Este pedido não pode mais ser cancelado.');
+      return;
+    }
+
     if (confirm(`Deseja realmente cancelar o pedido ${pedido.numero}?`)) {
       this.pedidosService.atualizarStatus(pedido.numero, 'cancelado');
       alert('Pedido cancelado com sucesso!');
+
+      if (this.pedidoSelecionado?.numero === pedido.numero) {
+        this.fecharDetalhes();
+      }
     }
   }
 
   recomprar(pedido: Pedido): void {
-    alert('Funcionalidade de recompra em desenvolvimento!\n\nOs itens deste pedido serão adicionados ao seu carrinho.');
+    const confirmacao = confirm(
+      `Deseja adicionar todos os itens deste pedido ao carrinho?\n\n` +
+      `Total: ${this.calcularTotalItens(pedido)} itens`
+    );
+
+    if (confirmacao) {
+      let mensagem = 'Itens que serão adicionados ao carrinho:\n\n';
+
+      pedido.itens.forEach(item => {
+        mensagem += `• ${item.nome} (${item.quantidade}x) - R$ ${this.formatarPreco(item.preco)}\n`;
+      });
+
+      alert(mensagem + '\n\nFuncionalidade em desenvolvimento!');
+    }
   }
 
 }

@@ -7,7 +7,8 @@
       "precoAntigo": 2999.99,
       "imagem": "assets/images/tv.jpg",
       "rating": 4.5,
-      "parcelas": 10
+      "parcelas": 10,
+      "estoque": 15
     },
     {
       "id": 2,
@@ -16,7 +17,8 @@
       "precoAntigo": 6499.99,
       "imagem": "assets/images/note.jpg",
       "rating": 4.8,
-      "parcelas": 12
+      "parcelas": 12,
+      "estoque": 8
     },
     {
       "id": 3,
@@ -25,7 +27,8 @@
       "precoAntigo": 3799.99,
       "imagem": "assets/images/geladeira.jpg",
       "rating": 4.3,
-      "parcelas": 10
+      "parcelas": 10,
+      "estoque": 12
     }
   ],
   "lancamentos": [
@@ -35,7 +38,8 @@
       "preco": 8999.99,
       "imagem": "assets/images/iphone.jpg",
       "rating": 5.0,
-      "parcelas": 12
+      "parcelas": 12,
+      "estoque": 5
     },
     {
       "id": 5,
@@ -43,7 +47,8 @@
       "preco": 6499.99,
       "imagem": "assets/images/samsung.jpg",
       "rating": 4.9,
-      "parcelas": 12
+      "parcelas": 12,
+      "estoque": 10
     },
     {
       "id": 6,
@@ -51,7 +56,8 @@
       "preco": 1899.99,
       "imagem": "assets/images/Xiaomi.jpg",
       "rating": 4.6,
-      "parcelas": 10
+      "parcelas": 10,
+      "estoque": 20
     },
     {
       "id": 7,
@@ -59,7 +65,8 @@
       "preco": 1599.99,
       "imagem": "assets/images/Motorola.jpg",
       "rating": 4.4,
-      "parcelas": 10
+      "parcelas": 10,
+      "estoque": 18
     },
     {
       "id": 8,
@@ -67,7 +74,8 @@
       "preco": 4299.99,
       "imagem": "assets/images/Watch.jpg",
       "rating": 4.9,
-      "parcelas": 12
+      "parcelas": 12,
+      "estoque": 7
     }
   ]
 }

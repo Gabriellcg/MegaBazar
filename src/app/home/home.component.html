@@ -1,32 +1,24 @@
-<!-- home.component.html -->
 <div class="home-container">
-  <!-- Header -->
+
   <header class="header">
     <div class="container">
       <div class="header-content">
-        <!-- Menu Mobile -->
+
         <button class="menu-btn" (click)="toggleMenu()">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M3 12h18M3 6h18M3 18h18" stroke-width="2" stroke-linecap="round"/>
+            <path d="M3 12h18M3 6h18M3 18h18" stroke-width="2" stroke-linecap="round" />
           </svg>
         </button>
 
-        <!-- Logo -->
         <h1 class="logo">MegaLoja Online</h1>
 
-        <!-- Barra de Busca Desktop -->
         <div class="search-bar desktop">
-          <input
-            type="text"
-            placeholder="Buscar produtos..."
-            class="search-input"
-            [(ngModel)]="termoBusca"
-            (input)="buscarProdutos($event)"
-          >
+          <input type="text" placeholder="Buscar produtos..." class="search-input" [(ngModel)]="termoBusca"
+            (input)="buscarProdutos($event)">
           <button class="search-btn" *ngIf="!buscaAtiva">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <circle cx="11" cy="11" r="8"/>
-              <path d="m21 21-4.35-4.35"/>
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
             </svg>
           </button>
           <button class="search-btn btn-clear" *ngIf="buscaAtiva" (click)="limparBusca()">
@@ -34,7 +26,6 @@
           </button>
         </div>
 
-        <!-- Ícones do Header -->
         <div class="header-icons">
           <button class="icon-btn">👤
           </button>
@@ -46,19 +37,13 @@
         </div>
       </div>
 
-      <!-- Barra de Busca Mobile -->
       <div class="search-bar mobile">
-        <input
-          type="text"
-          placeholder="Buscar produtos..."
-          class="search-input"
-          [(ngModel)]="termoBusca"
-          (input)="buscarProdutos($event)"
-        >
+        <input type="text" placeholder="Buscar produtos..." class="search-input" [(ngModel)]="termoBusca"
+          (input)="buscarProdutos($event)">
         <button class="search-btn" *ngIf="!buscaAtiva">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.35-4.35"/>
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
           </svg>
         </button>
         <button class="search-btn btn-clear" *ngIf="buscaAtiva" (click)="limparBusca()">
@@ -68,21 +53,21 @@
     </div>
   </header>
 
-  <!-- Main Content -->
+
   <main class="main-content">
     <div class="container">
 
-      <!-- Mensagem de Loading -->
+
       <div *ngIf="loading" class="loading-message">
         <p>Carregando produtos...</p>
       </div>
 
-      <!-- Mensagem de Erro -->
+
       <div *ngIf="erro && !loading" class="error-message">
         <p>{{ erro }}</p>
       </div>
 
-      <!-- Seção de Promoções -->
+
       <section class="section" *ngIf="!loading && promocoesFiltradas && promocoesFiltradas.length > 0">
         <h2 class="section-title promocoes">
           {{ buscaAtiva ? 'Promoções encontradas' : 'Promoções Relâmpagos' }}
@@ -91,7 +76,7 @@
 
         <div class="products-grid">
           <div class="product-card" *ngFor="let produto of promocoesFiltradas">
-            <!-- Imagem do Produto -->
+
             <div class="product-image" [routerLink]="['/produto', produto.id]">
               <img [src]="produto.imagem" [alt]="produto.nome">
               <div class="discount-badge" *ngIf="produto.precoAntigo">
@@ -99,22 +84,20 @@
               </div>
             </div>
 
-            <!-- Informações do Produto -->
+
             <div class="product-info">
               <h3 class="product-name" [routerLink]="['/produto', produto.id]">{{ produto.nome }}</h3>
 
-              <!-- Rating com Estrelas -->
+
               <div class="rating">
-                <span
-                  *ngFor="let estrela of getArrayEstrelas(produto.rating)"
-                  [class.filled]="isEstrelaPreenchida(estrela, produto.rating)"
-                  class="star">
+                <span *ngFor="let estrela of getArrayEstrelas(produto.rating)"
+                  [class.filled]="isEstrelaPreenchida(estrela, produto.rating)" class="star">
                   ★
                 </span>
                 <span class="rating-value">({{ produto.rating }})</span>
               </div>
 
-              <!-- Preços -->
+
               <p class="old-price" *ngIf="produto.precoAntigo">
                 R$ {{ produto.precoAntigo }}
               </p>
@@ -127,10 +110,8 @@
                 ou {{ produto.parcelas }}x de R$ {{ calcularParcela(produto) }}
               </p>
 
-              <!-- Botão -->
-              <button
-                class="btn-add-cart"
-                (click)="adicionarAoCarrinho(produto)">
+
+              <button class="btn-add-cart" (click)="adicionarAoCarrinho(produto)">
                 Adicionar ao Carrinho
               </button>
             </div>
@@ -138,7 +119,7 @@
         </div>
       </section>
 
-      <!-- Seção de Lançamentos -->
+
       <section class="section" *ngIf="!loading && lancamentosFiltrados && lancamentosFiltrados.length > 0">
         <h2 class="section-title lancamentos">
           {{ buscaAtiva ? 'Lançamentos encontrados' : 'Lançamentos' }}
@@ -147,27 +128,25 @@
 
         <div class="products-grid lancamentos-grid">
           <div class="product-card" *ngFor="let produto of lancamentosFiltrados">
-            <!-- Imagem do Produto -->
+
             <div class="product-image" [routerLink]="['/produto', produto.id]">
               <img [src]="produto.imagem" [alt]="produto.nome">
             </div>
 
-            <!-- Informações do Produto -->
+
             <div class="product-info">
               <h3 class="product-name" [routerLink]="['/produto', produto.id]">{{ produto.nome }}</h3>
 
-              <!-- Rating com Estrelas -->
+
               <div class="rating">
-                <span
-                  *ngFor="let estrela of getArrayEstrelas(produto.rating)"
-                  [class.filled]="isEstrelaPreenchida(estrela, produto.rating)"
-                  class="star">
+                <span *ngFor="let estrela of getArrayEstrelas(produto.rating)"
+                  [class.filled]="isEstrelaPreenchida(estrela, produto.rating)" class="star">
                   ★
                 </span>
                 <span class="rating-value">({{ produto.rating }})</span>
               </div>
 
-              <!-- Preços -->
+
               <p class="price">
                 R$ {{ produto.preco }}
               </p>
@@ -176,10 +155,8 @@
                 ou {{ produto.parcelas }}x de R$ {{ calcularParcela(produto) }}
               </p>
 
-              <!-- Botão -->
-              <button
-                class="btn-add-cart"
-                (click)="adicionarAoCarrinho(produto)">
+
+              <button class="btn-add-cart" (click)="adicionarAoCarrinho(produto)">
                 Adicionar ao Carrinho
               </button>
             </div>
@@ -187,22 +164,25 @@
         </div>
       </section>
 
-      <!-- Mensagem quando não há produtos -->
-      <div *ngIf="!loading && buscaAtiva && promocoesFiltradas.length === 0 && lancamentosFiltrados.length === 0" class="no-products">
+
+      <div *ngIf="!loading && buscaAtiva && promocoesFiltradas.length === 0 && lancamentosFiltrados.length === 0"
+        class="no-products">
         <div class="no-results-icon">🔍</div>
         <h3>Nenhum produto encontrado</h3>
         <p>Não encontramos produtos com o termo "<strong>{{ termoBusca }}</strong>"</p>
         <button class="btn-clear-search" (click)="limparBusca()">Limpar busca</button>
       </div>
 
-      <div *ngIf="!loading && !buscaAtiva && (!promocoes || promocoes.length === 0) && (!lancamentos || lancamentos.length === 0)" class="no-products">
+      <div
+        *ngIf="!loading && !buscaAtiva && (!promocoes || promocoes.length === 0) && (!lancamentos || lancamentos.length === 0)"
+        class="no-products">
         <p>Nenhum produto disponível no momento.</p>
       </div>
 
     </div>
   </main>
 
-  <!-- Footer -->
+
   <footer class="footer">
     <div class="container">
       <div class="footer-content">

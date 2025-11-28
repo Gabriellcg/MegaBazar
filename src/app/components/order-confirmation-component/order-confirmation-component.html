@@ -1,12 +1,12 @@
-<!-- order-confirmation.component.html -->
+
 <div class="order-confirmation-container">
 
-  <!-- Banner Promocional -->
+
   <div class="promo-banner">
     Para frete grátis em pedidos acima de R$100,00 ou mais, use o código FRETEFREE
   </div>
 
-  <!-- Header -->
+
   <header class="header">
     <div class="container">
       <div class="header-content">
@@ -21,7 +21,7 @@
     </div>
   </header>
 
-  <!-- Breadcrumb -->
+
   <div class="breadcrumb">
     <div class="container">
       <button class="back-btn" (click)="voltarParaHome()">
@@ -30,16 +30,15 @@
     </div>
   </div>
 
-  <!-- Loading -->
+
   <div *ngIf="loading" class="loading-container">
     <p>Carregando detalhes do pedido...</p>
   </div>
 
-  <!-- Main Content -->
+
   <main class="main-content" *ngIf="!loading && pedido">
     <div class="container">
 
-      <!-- Título e Status -->
       <div class="success-header">
         <div class="success-icon">✓</div>
         <h1 class="page-title">Pedido confirmado</h1>
@@ -47,13 +46,13 @@
         <p class="order-date">Realizado em: {{ formatarData(pedido.data) }}</p>
       </div>
 
-      <!-- Grid Principal -->
+
       <div class="order-grid">
 
-        <!-- Coluna Esquerda - Detalhes do Pedido -->
+
         <div class="left-column">
 
-          <!-- Itens do Pedido -->
+
           <div class="order-section">
             <h2 class="section-title">Itens do pedido</h2>
 
@@ -77,7 +76,6 @@
             </div>
           </div>
 
-          <!-- Ações Principais -->
           <div class="action-buttons">
             <button class="btn-primary" (click)="verMaisProdutos()">
               Ver mais produtos
@@ -90,7 +88,6 @@
             </button>
           </div>
 
-          <!-- Informações Adicionais -->
           <div class="info-box">
             <p class="info-text">
               <strong>Atenção:</strong> Confira os detalhes do pedido antes de confirmar.
@@ -101,10 +98,8 @@
 
         </div>
 
-        <!-- Coluna Direita - Resumo e Detalhes -->
         <div class="right-column">
 
-          <!-- Resumo do Pedido -->
           <div class="summary-card">
             <h3 class="card-title">Quantidade</h3>
 
@@ -135,7 +130,6 @@
             </div>
           </div>
 
-          <!-- Endereço de Entrega -->
           <div class="address-card">
             <h3 class="card-title">Endereço de entrega</h3>
             <div class="address-content">
@@ -147,7 +141,6 @@
             </div>
           </div>
 
-          <!-- Forma de Pagamento -->
           <div class="payment-card">
             <h3 class="card-title">Forma de pagamento</h3>
             <div class="payment-content">
@@ -156,7 +149,6 @@
             </div>
           </div>
 
-          <!-- Timeline de Entrega -->
           <div class="timeline-card">
             <h3 class="card-title">Status do pedido</h3>
             <div class="timeline">
@@ -205,7 +197,6 @@
     </div>
   </main>
 
-  <!-- Caso não tenha pedido -->
   <div *ngIf="!loading && !pedido" class="no-order">
     <div class="container">
       <h2>Nenhum pedido encontrado</h2>
@@ -216,7 +207,6 @@
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
